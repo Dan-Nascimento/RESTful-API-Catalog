@@ -20,48 +20,48 @@ public class Identification implements Serializable {
     @Column(name = "COD_GEN")
     Long codGen;
 
-    @Column(name = "FSC", length = 4)
+    @Column(name = "FSC", columnDefinition = "char", length = 4)
     String fsc;
 
     @Column(name = "NIIN", length = 17)
     String niin;
 
-    @Column(name = "NSN", length = 13)
+    @Column(name = "NSN", columnDefinition = "char", length = 13)
     String nsn;
 
     @Column(name = "ITEM_NAME", length = 128)
     String itemName;
 
-    @Column(name = "INC", length = 5)
+    @Column(name = "INC", columnDefinition = "char", length = 5)
     String inc;
 
-    @Column(name = "TIIC", length = 2)
+    @Column(name = "TIIC", columnDefinition = "char", length = 2)
     String tiic;
 
-    @Column(name = "RPDMRC", length = 1)
+    @Column(name = "RPDMRC", columnDefinition = "char", length = 1)
     String rpdmrc;
 
-    @Column(name = "FMSN", length = 3)
+    @Column(name = "FMSN", columnDefinition = "char", length = 3)
     String fmsn;
 
-    @Column(name = "MGMT_PMI", length = 1)
+    @Column(name = "MGMT_PMI", columnDefinition = "char", length = 1)
     String mgmtPmi;
 
-    @Column(name = "MGMT_ADP", length = 1)
+    @Column(name = "MGMT_ADP", columnDefinition = "char", length = 1)
     String mgmtAdp;
 
-    @Column(name = "MGMT_DML", length = 1)
+    @Column(name = "MGMT_DML", columnDefinition = "char", length = 1)
     String mgmtDml;
 
-    @Column(name = "MGMT_ESDC", length = 1)
+    @Column(name = "MGMT_ESDC", columnDefinition = "char", length = 1)
     String mgmtEsdc;
 
-    @Column(name = "MGMT_CC", length = 1)
+    @Column(name = "MGMT_CC", columnDefinition = "char", length = 1)
     String mgmtCc;
 
-    @Column(name = "MGMT_HMIC", length = 1)
+    @Column(name = "MGMT_HMIC", columnDefinition = "char", length = 1)
     String mgmtHmic;
 
-    @Column(name = "ORIGEM", length = 1)
+    @Column(name = "ORIGEM", columnDefinition = "char", length = 1)
     String origem;
 }

@@ -10,7 +10,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>mb.dabm</groupId>
-    <artifactId>servcat-api-waldomiro</artifactId>
+    <artifactId>servcat-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>servcat-api</name>
     <description>Catálogo de Itens de Suprimentos NATO/FEDLOG</description>
