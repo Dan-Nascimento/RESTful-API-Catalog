@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record IdentificationDto(
+    Long codGen,
     String fsc,
     String niin,
     String nsn,
@@ -13,11 +14,6 @@ public record IdentificationDto(
     String tiic,
     String rpdmrc,
     String fmsn,
-    String mgmtPmi,
-    String mgmtAdp,
-    String mgmtDml,
-    String mgmtEsdc,
-    String mgmtCc,
-    String mgmtHmic,
     String origem
-) {}
+) {
+}
