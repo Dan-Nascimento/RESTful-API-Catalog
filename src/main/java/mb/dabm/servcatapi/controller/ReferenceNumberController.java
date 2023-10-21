@@ -16,26 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/referenceNumber")
+@RequestMapping("/references")
 @AllArgsConstructor
 @Data
 @Tag(name = "REFERENCE_NUMBER endpoints")
 public class ReferenceNumberController {
 
-
-
      /* Todos os endpoints estão documentados pela ferramenta swagger acessada pela url:
      http://localhost:8080/swagger-ui/index.html
-
      */
-
 
     @Autowired
     ReferenceNumberService service;
 
-
     /*
-     * Exemplo: http://localhost:8080/referenceNumber/
+     * Exemplo: http://localhost:8080/references/
      */
     @GetMapping("/")
     @Operation(summary = "Retorna todos os itens cadastrados na tabela REFERENCE_NUMBER")
