@@ -1,6 +1,7 @@
 package mb.dabm.servcatapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import mb.dabm.servcatapi.entity.Identification;
@@ -14,12 +15,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/identifications")
 @Data
 @AllArgsConstructor
+@Tag(name = "GENERAL endpoints")
 public class IdentificationController {
+
+
+    /* Todos os endpoints estão documentados pela ferramenta swagger acessada pela url:
+     http://localhost:8080/swagger-ui/index.html
+
+     */
+
 
     @Autowired
     IdentificationService service;
 
     @GetMapping("/")
+    @Operation(summary = "Retorna todos os itens cadastrados na tabela GENERAL")
     public ResponseEntity<Page<Identification>> listAll(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
@@ -44,6 +54,7 @@ public class IdentificationController {
      * Exemplo: http://localhost:8080/identifications/niin/contains/0000374
      */
     @GetMapping("/niin/contains/{niin}")
+    @Operation(summary = "Retorna todos os itens que contenham parte do Id buscado na coluna NIIN da tabela GENERAL")
     public ResponseEntity<Page<Identification>> listIdentificationByNiinLike(
         @PathVariable("niin") String niin,
         @RequestParam(value = "page", defaultValue = "0") int page,
@@ -57,6 +68,7 @@ public class IdentificationController {
      * Exemplo: http://localhost:8080/identifications/niin/000037455
      */
     @GetMapping("/niin/{niin}")
+    @Operation(summary = "Retorna um único item buscado por ID na coluna NIIN da tabela GENERAL")
     public ResponseEntity<Identification> listIdentificationByNiinId(
         @PathVariable("niin") String niin
     ) {
@@ -68,6 +80,7 @@ public class IdentificationController {
      * Exemplo: http://localhost:8080/identifications/list?page=1&size=100
      */
     @GetMapping("/list")
+    @Operation(summary = "Retorna todos os registros da coluna NIIN da tabela GENERAL")
     public ResponseEntity<Page<Identification>> listIdentificationByNiinAll(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
@@ -80,6 +93,7 @@ public class IdentificationController {
      * Exemplo: http://localhost:8080/identifications/fsc/4935?page=1&size=100
      */
     @GetMapping("/fsc/{fsc}")
+    @Operation(summary = "Retorna todos os itens que contenham o Id buscado na coluna FSC da tabela GENERAL")
     public ResponseEntity<Page<Identification>> listIdentificationByNiinFromFsc(
         @PathVariable("fsc") String fsc,
         @RequestParam(value = "page", defaultValue = "0") int page,
@@ -93,6 +107,7 @@ public class IdentificationController {
      * Exemplo: http://localhost:8080/identifications/inc/03656?page=0&size=100
      */
     @GetMapping("/inc/{inc}")
+    @Operation(summary = "Retorna todos os itens que contenham o Id buscado na coluna INC da tabela GENERAL")
     public ResponseEntity<Page<Identification>> listIdentificationByNiinFromInc(
         @PathVariable("inc") String inc,
         @RequestParam(value = "page", defaultValue = "0") int page,
