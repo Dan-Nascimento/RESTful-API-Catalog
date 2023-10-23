@@ -34,19 +34,10 @@ public class ReferenceNumberService {
 
 
     public Page<ReferenceNumber> getByNiinAndNumRef (String niin, String refNumNaoFor, int page, int size) {
-        long count = niin.chars().filter(ch -> ch == '*').count();
+
+        long count = refNumNaoFor.chars().filter(ch -> ch == '*').count();
 
         if (count > 0) {
-            niin = niin.replace("*", "%");
-        } else {
-            niin = "%" + niin + "%";
-        }
-
-
-
-        long count1 = refNumNaoFor.chars().filter(ch -> ch == '*').count();
-
-        if (count1 > 0) {
             refNumNaoFor = refNumNaoFor.replace("*", "%");
         } else {
             refNumNaoFor = "%" + refNumNaoFor + "%";

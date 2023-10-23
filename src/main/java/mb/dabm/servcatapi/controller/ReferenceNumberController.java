@@ -42,6 +42,10 @@ public class ReferenceNumberController {
 
 
 
+    /*
+    exemplo: http://localhost:8080/reference/30620926
+
+     */
 
 @GetMapping("{codRef}")
 @Operation(summary = "Query retorna um único registro com a busca por COD_REF na tabela REFERENCE_NUMBER")
@@ -52,6 +56,10 @@ public class ReferenceNumberController {
     }
 
 
+
+    /*
+    exemplo: http://localhost:8080/reference/niin/014292368
+     */
 
     @GetMapping("/niin/{niin}")
     @Operation(summary = "Query retorna uma lista paginada de referências com a busca por NIIN na tabela REFERENCE_NUMBER e GENERAL")

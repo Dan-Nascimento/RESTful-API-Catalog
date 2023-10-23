@@ -58,8 +58,8 @@ public interface ReferenceNumberRepository
 
     @Query(value = """
         SELECT *
-        "FROM REFERENCE_NUMBER"
-        "WHERE 1 = 1"
+        "FROM REFERENCE_NUMBER \n" +
+        "WHERE 1 = 1 \n" +
         "AND COD_GEN = (SELECT COD_GEN FROM GENERAL WHERE NIIN = :niin) \n" +
         "AND REF_NUM_NAOFOR LIKE :refNumNaoFor"
         """,
