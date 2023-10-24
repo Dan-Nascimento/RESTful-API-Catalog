@@ -47,6 +47,10 @@ public class ReferenceNumberService {
 
     }
 
+    public Page<ReferenceNumber> getByRefNumNaoforContainingAndOrigem(String refNumNaoFor, String origem, int page, int size) {
+        return repository.findByRefNumNaoforContainingAndOrigem(refNumNaoFor, origem, PageRequest.of(page, size));
+    }
+
 }
 
 

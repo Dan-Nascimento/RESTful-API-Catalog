@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface ReferenceNumberRepository
     extends JpaRepository<ReferenceNumber, Long> {
 
-
     @Query(value = "SELECT S.COD_REF\n" +
         "      ,S.COD_GEN\n" +
         "      ,S.CAGE_CODE\n" +
@@ -31,7 +30,6 @@ public interface ReferenceNumberRepository
         nativeQuery = true)
     Page<ReferenceNumber> getByAllReferenceNumber(Pageable pageable);
 
-
     @Query(value = """
         SELECT *
         FROM REFERENCE_NUMBER
@@ -40,32 +38,26 @@ public interface ReferenceNumberRepository
         nativeQuery = true)
     ReferenceNumber getByCodRefId(String codRef);
 
-
-
-
     @Query(value = """
         SELECT *
         FROM REFERENCE_NUMBER
         WHERE 1 = 1
         AND COD_GEN = (SELECT COD_GEN FROM GENERAL WHERE NIIN = :niin)
         """,
-    nativeQuery = true)
-    Page<ReferenceNumber> getByReferenceNiin (String niin, Pageable pageable);
-
-
-
-
+        nativeQuery = true)
+    Page<ReferenceNumber> getByReferenceNiin(String niin, Pageable pageable);
 
     @Query(value = """
         SELECT *
-        "FROM REFERENCE_NUMBER \n" +
-        "WHERE 1 = 1 \n" +
-        "AND COD_GEN = (SELECT COD_GEN FROM GENERAL WHERE NIIN = :niin) \n" +
-        "AND REF_NUM_NAOFOR LIKE :refNumNaoFor"
+        FROM REFERENCE_NUMBER
+        WHERE 1 = 1
+        AND COD_GEN = (SELECT COD_GEN FROM GENERAL WHERE NIIN = :niin)
+        AND REF_NUM_NAOFOR LIKE :refNumNaofor
         """,
-    nativeQuery = true)
-    Page<ReferenceNumber> getByNiinAndNumRef (String niin, String refNumNaofor, Pageable pageable);
+        nativeQuery = true)
+    Page<ReferenceNumber> getByNiinAndNumRef(String niin, String refNumNaofor, Pageable pageable);
 
+    Page<ReferenceNumber> findByRefNumNaoforContainingAndOrigem(String refNumNaofor, String origem, Pageable pageable);
 
 }
 

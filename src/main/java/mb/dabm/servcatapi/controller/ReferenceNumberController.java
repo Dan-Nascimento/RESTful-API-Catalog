@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/reference")
+@RequestMapping("/references")
 @AllArgsConstructor
 @Data
 @Tag(name = "REFERENCE_NUMBER endpoints")
@@ -40,38 +40,30 @@ public class ReferenceNumberController {
         return ResponseEntity.ok(service.findByReferenceNumber(page, size));
     }
 
-
-
     /*
     exemplo: http://localhost:8080/reference/30620926
 
      */
-
-@GetMapping("{codRef}")
-@Operation(summary = "Query retorna um único registro com a busca por COD_REF na tabela REFERENCE_NUMBER")
-    public ResponseEntity<ReferenceNumber> listByCodRefId (
+    @GetMapping("/{codRef}")
+    @Operation(summary = "Query retorna um único registro com a busca por COD_REF na tabela REFERENCE_NUMBER")
+    public ResponseEntity<ReferenceNumber> listByCodRefId(
         @PathVariable("codRef") String codRef
     ) {
         return ResponseEntity.ok(service.findByCodRefId(codRef));
     }
 
-
-
     /*
     exemplo: http://localhost:8080/reference/niin/014292368
      */
-
     @GetMapping("/niin/{niin}")
     @Operation(summary = "Query retorna uma lista paginada de referências com a busca por NIIN na tabela REFERENCE_NUMBER e GENERAL")
-    public ResponseEntity<Page<ReferenceNumber>> listByReferenceNiin (
-        @PathVariable ("niin") String niin,
-        @RequestParam (value = "page", defaultValue = "0") int page,
-        @RequestParam (value = "size", defaultValue = "20") int size
+    public ResponseEntity<Page<ReferenceNumber>> listByReferenceNiin(
+        @PathVariable("niin") String niin,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         return ResponseEntity.ok(service.findByReferenceNiin(niin, page, size));
     }
-
-
 
     @GetMapping("/niin/{niin}/reference/{refNumNaoFor}")
     Page<ReferenceNumber> listByNiinAndRefNumNaoFor(
@@ -84,5 +76,15 @@ public class ReferenceNumberController {
 
     }
 
+    @GetMapping("/numref/{refNumNaoFor}")
+    Page<ReferenceNumber> listByRefNumNaoforContainingAndOrigem(
+        @PathVariable("refNumNaoFor") String refNumNaoFor,
+        @RequestParam(value = "origem", defaultValue = "N") String origem,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "20") int size
+    ) {
+        return service.getByRefNumNaoforContainingAndOrigem(refNumNaoFor, origem, page, size);
+
+    }
 
 }
