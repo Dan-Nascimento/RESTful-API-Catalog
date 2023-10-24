@@ -18,7 +18,48 @@ public class ReferenceNumberService {
     @Autowired
     ReferenceNumberRepository repository;
 
-    public Page<ReferenceNumber> findByReferenceNumber (int page, int size) {return repository.getByAllReferenceNumber(PageRequest.of(page, size));}
+    public Page<ReferenceNumber> findByReferenceNumber(int page, int size) {
+        return repository.getByAllReferenceNumber(PageRequest.of(page, size));
+    }
 
+
+    public ReferenceNumber findByCodRefId (String codRef) {
+        return repository.getByCodRefId(codRef);
+    }
+
+
+    public Page<ReferenceNumber> findByReferenceNiin (String niin, int page, int size) {
+        return repository.getByReferenceNiin(niin, PageRequest.of(page, size));
+    }
+
+
+    public Page<ReferenceNumber> getByNiinAndNumRef (String niin, String refNumNaoFor, int page, int size) {
+
+        long count = refNumNaoFor.chars().filter(ch -> ch == '*').count();
+
+        if (count > 0) {
+            refNumNaoFor = refNumNaoFor.replace("*", "%");
+        } else {
+            refNumNaoFor = "%" + refNumNaoFor + "%";
+        }
+
+        return repository.getByNiinAndNumRef(niin, refNumNaoFor, PageRequest.of(page, size));
+
+    }
+
+    public Page<ReferenceNumber> getByRefNumNaoforContainingAndOrigem(String refNumNaoFor, String origem, int page, int size) {
+        return repository.findByRefNumNaoforContainingAndOrigem(refNumNaoFor, origem, PageRequest.of(page, size));
+    }
 
 }
+
+
+/*
+    long count = niin.chars().filter(ch -> ch == '*').count();
+
+        if (count > 0) {
+            niin = niin.replace("*", "%");
+        } else {
+            niin = "%" + niin + "%";
+        }
+ */
