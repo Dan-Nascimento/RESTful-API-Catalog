@@ -1,4 +1,4 @@
-/* Formatted on 02/09/2023 17:10:57 (QP5 v5.388) */
+﻿/* Formatted on 02/09/2023 17:10:57 (QP5 v5.388) */
 SELECT                                                       /*  FIRST_ROWS */
        COD_GEN,
        FSC,
@@ -20,7 +20,8 @@ SELECT                                                       /*  FIRST_ROWS */
  WHERE 1 = 1
    --AND ROWNUM < 1000
    --AND FSC = '4935'
-   AND INC = '03656'
+   --AND INC = '03656'
+   AND NIIN = '146051168'
 ;
 
 SELECT /*  FIRST_ROWS */ COUNT(*) FROM GENERAL;

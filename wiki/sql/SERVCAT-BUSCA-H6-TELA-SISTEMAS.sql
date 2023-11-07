@@ -1,4 +1,4 @@
---2 -  busca/filtro combobox INC da tela de consultas do h6
+﻿--2 -  busca/filtro combobox INC da tela de consultas do h6
 --imagem: servcat-h6-busca1.png
 SELECT DISTINCT INC
 FROM H6
@@ -9,13 +9,18 @@ SELECT *
 FROM H6
 WHERE INC LIKE '49106%';
 
+SELECT * FROM H6 WHERE FIIG = 'A45000';
+
 --3 -- corresponde a tela servcat da aba resultado com base na busca da tela de consultas do h6
 -- imagem: servcat-h6-resltado1.png
-SELECT H6.INC, FIIG, ITEM_NAME, IC.CLASSE
+SELECT H6.INC, FIIG, ITEM_NAME, DEFINITION, STATUS_INC, NOME_APROV, APP_KEY, 
+       CONDITION_CODE, IC.CLASSE, CLASSE_MODIF, N_NACIONAL, D_NACIONAL, STATUS, RELATED_INC
 FROM H6 H6, INC_CLASSE IC
 WHERE H6.INC = IC.INC (+)
-AND H6.INC = '49106'
-GROUP BY H6.INC, FIIG, ITEM_NAME, DEFINITION, STATUS_INC, NOME_APROV, APP_KEY, CONDITION_CODE, IC.CLASSE;
+AND H6.INC = '08666'
+GROUP BY H6.INC, FIIG, ITEM_NAME, DEFINITION, STATUS_INC, NOME_APROV, APP_KEY, 
+      CONDITION_CODE, IC.CLASSE,CLASSE_MODIF, N_NACIONAL, D_NACIONAL, STATUS, 
+      RELATED_INC;
 
 --4-- corresponde a tela da aba Artigos com base na busca da tela de consultas do h6
 -- imagem: servcat-h6-consulta1.png
