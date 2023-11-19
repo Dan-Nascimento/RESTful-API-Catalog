@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "H6", schema = "FEDLOGDB")
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonIgnoreProperties(value = { "hibernate_lazy_initializer", "handler" })
+@JsonIgnoreProperties(value = {"hibernate_lazy_initializer", "handler"})
 public class H6 implements Serializable {
 
     @Id
@@ -60,8 +60,5 @@ public class H6 implements Serializable {
 
     @Column(name = "ITEM_NAME", length = 200)
     String itemName;
-
-
-
 
 }
