@@ -44,15 +44,17 @@ public class ApiSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
 
+        // responsável para visualizar registros do NMCRL.
         UserDetails servcat = User.builder()
             .username("servcat")
-            .password(passwordEncoder().encode("servcat"))
+            .password(passwordEncoder().encode("s3rvc@t"))
             .roles("USER")
             .build();
 
+        // responsável para cadastrar registros do NMCRL.
         UserDetails admin = User.builder()
             .username("admin")
-            .password(passwordEncoder().encode("admin"))
+            .password(passwordEncoder().encode("nmcrl@dabm"))
             .roles("admin")
             .build();
 
