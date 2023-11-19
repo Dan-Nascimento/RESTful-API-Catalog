@@ -13,7 +13,6 @@ import java.util.List;
 public interface CharacteristicsRepository
     extends JpaRepository<Characteristics, Long> {
 
-
     @Query(value = "SELECT S.COD_GEN\n" +
         "      ,S.CHAR_MRC\n" +
         "      ,S.COD_CHAR\n" +
@@ -22,12 +21,11 @@ public interface CharacteristicsRepository
         nativeQuery = true)
     Page<Characteristics> getByAll(Pageable pageable);
 
-
     @Query(value = """
         SELECT *
         FROM CHARACTERISTICS
         WHERE COD_GEN = :codGen""",
         nativeQuery = true)
-    List<Characteristics> getByCodGen (String codGen);
+    List<Characteristics> getByCodGen(String codGen);
 
 }

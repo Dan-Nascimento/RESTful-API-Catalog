@@ -21,11 +21,12 @@ public class CharacteristicsService {
     @Autowired
     CharacteristicsRepository repository;
 
+    public Page<Characteristics> findByAll(int page, int size) {
+        return repository.getByAll(PageRequest.of(page, size));
+    }
 
-    public Page<Characteristics> findByAll(int page, int size) { return repository.getByAll(PageRequest.of(page, size));}
-
-
-    public List<Characteristics> findByCodGen(String codGen) {return repository.getByCodGen(codGen);}
-
+    public List<Characteristics> findByCodGen(String codGen) {
+        return repository.getByCodGen(codGen);
+    }
 
 }

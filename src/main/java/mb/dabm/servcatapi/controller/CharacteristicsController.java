@@ -21,11 +21,8 @@ import java.util.List;
 @Tag(name = "CHARACTERISTICS endpoints")
 public class CharacteristicsController {
 
-
-
     @Autowired
     CharacteristicsService service;
-
 
     @GetMapping("/")
     @Operation(summary = "Retorna todos os itens cadastrados na tabela CHARACTERISTICS")
@@ -36,7 +33,6 @@ public class CharacteristicsController {
         return ResponseEntity.ok(service.findByAll(page, size));
     }
 
-
     @GetMapping("/codgen/{codGen}")
     @Operation(summary = "Retorna uma lista de registros encontrados sem paginação na tabela CHARACTERISTICS")
     public ResponseEntity<List<Characteristics>> listByCodGen(
@@ -44,7 +40,5 @@ public class CharacteristicsController {
     ){
         return ResponseEntity.ok(service.findByCodGen(codGen));
     }
-
-
 
 }
