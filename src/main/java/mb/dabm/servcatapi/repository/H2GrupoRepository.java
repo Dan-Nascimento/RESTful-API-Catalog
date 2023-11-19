@@ -33,7 +33,7 @@ public interface H2GrupoRepository
     @Query(value = """
     SELECT *
     FROM H2_GRUPO
-    WHERE GRUPO LIKE :grupo
+    WHERE N_NACIONAL LIKE :grupo
     """,
     nativeQuery = true)
     List<H2Grupo> getByGrupoLike (String grupo);
