@@ -12,9 +12,6 @@ import java.util.List;
 public interface ManagementRepository
     extends JpaRepository<Management, Long> {
 
-
-
-
     @Query(value = "SELECT S.COD_MAN\n" +
         "      ,S.COD_GEN\n" +
         "      ,S.MGMT_SA\n" +
@@ -37,14 +34,11 @@ public interface ManagementRepository
         nativeQuery = true)
     Page<Management> getByAll(Pageable pageable);
 
-
     @Query(value = """
         SELECT *
         FROM MANAGEMENT
         WHERE COD_GEN = :codGen""",
         nativeQuery = true)
-    List<Management> getByCodGen (String codGen);
-
-
+    List<Management> getByCodGen(String codGen);
 
 }

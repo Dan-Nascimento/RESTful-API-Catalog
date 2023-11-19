@@ -21,15 +21,14 @@ public class ManagementService {
     @Autowired
     ManagementRepository repository;
 
+    public Page<Management> findByAll(int page, int size) {
+        return repository.getByAll(PageRequest.of(page, size));
+    }
 
 
-
-
-    public Page<Management> findByAll(int page, int size) { return repository.getByAll(PageRequest.of(page, size));}
-
-
-    public List<Management> findByCodGen(String codGen) {return repository.getByCodGen(codGen);}
-
+    public List<Management> findByCodGen(String codGen) {
+        return repository.getByCodGen(codGen);
+    }
 
 
 }

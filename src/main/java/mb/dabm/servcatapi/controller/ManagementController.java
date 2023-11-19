@@ -18,14 +18,11 @@ import java.util.List;
 @RequestMapping("/management")
 @Data
 @AllArgsConstructor
-@Tag(name = "MANAGEMENT endpoints")
+@Tag(name = "GERÊNCIA endpoints")
 public class ManagementController {
 
     @Autowired
     ManagementService service;
-
-
-
 
     @GetMapping("/")
     @Operation(summary = "Retorna todos os itens cadastrados na tabela MANAGEMENT")
@@ -36,16 +33,12 @@ public class ManagementController {
         return ResponseEntity.ok(service.findByAll(page, size));
     }
 
-
     @GetMapping("/codgen/{codGen}")
     @Operation(summary = "Retorna uma lista de registros encontrados sem paginação na tabela MANAGEMENT")
     public ResponseEntity<List<Management>> listByCodGen(
         @PathVariable("codGen") String codGen
-    ){
-    return ResponseEntity.ok(service.findByCodGen(codGen));
+    ) {
+        return ResponseEntity.ok(service.findByCodGen(codGen));
     }
-
-
-
 
 }
