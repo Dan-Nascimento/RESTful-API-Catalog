@@ -15,16 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/h2")
+@RequestMapping("/h2/classe")
 @Data
 @AllArgsConstructor
 @Tag(name = "H2_CLASSE endpoints")
 public class H2ClasseController {
 
-
     @Autowired
     H2ClasseService service;
-
 
     @GetMapping("/")
     @Operation(summary = "Retorna todos os itens cadastrados na tabela H2_CLASSE")
@@ -35,8 +33,6 @@ public class H2ClasseController {
         return ResponseEntity.ok(service.findByAll(page, size));
     }
 
-
-
     @GetMapping("/contains/{classe}")
     @Operation(summary = "Retorna uma lista de registro pesquisando por contendo(containing - like) na tabela H2_CLASSE")
     List<H2Classe> listByClasseContaining(
@@ -45,31 +41,22 @@ public class H2ClasseController {
         @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         return service.getByClasseContaining(classe, page, size);
-
     }
 
-
-
-    @GetMapping("/classe/{classe}")
+    @GetMapping("/{classe}")
     @Operation(summary = "Retorna um registro da coluna CLASSE na tabela H2_CLASSE")
     public ResponseEntity<H2Classe> listByClasseId(
         @PathVariable("classe") String classe
-
     ) {
         return ResponseEntity.ok(service.findByClasseId(classe));
     }
-
-
 
     @GetMapping("/grupo/{grupo}")
     @Operation(summary = "Retorna uma lista de registros encontrados sem paginação na tabela H2_CLASSE")
     public ResponseEntity<List<H2Classe>> listByGrupo(
         @PathVariable("grupo") String grupo
-    ){
+    ) {
         return ResponseEntity.ok(service.findByGrupoList(grupo));
     }
-
-
-
 
 }

@@ -19,15 +19,14 @@ import java.util.List;
 @AllArgsConstructor
 public class H2ClasseService {
 
-
     @Autowired
     H2CLasseRepository repository;
 
+    public Page<H2Classe> findByAll(int page, int size) {
+        return repository.getByAll(PageRequest.of(page, size));
+    }
 
-    public Page<H2Classe> findByAll(int page, int size) { return repository.getByAll(PageRequest.of(page, size));}
-
-
-    public List<H2Classe> getByClasseContaining (String classe, int page, int size) {
+    public List<H2Classe> getByClasseContaining(String classe, int page, int size) {
 
         long count = classe.chars().filter(ch -> ch == '*').count();
 
@@ -41,16 +40,12 @@ public class H2ClasseService {
 
     }
 
-
-
     public H2Classe findByClasseId(String classe) {
         return repository.getByClasseId(classe);
     }
 
-
-    public List<H2Classe> findByGrupoList(String grupo) {return repository.getByGrupoList(grupo);}
-
-
-
+    public List<H2Classe> findByGrupoList(String grupo) {
+        return repository.getByGrupoList(grupo);
+    }
 
 }

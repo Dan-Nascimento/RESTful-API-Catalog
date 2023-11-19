@@ -10,26 +10,19 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface H2CLasseRepository
-        extends JpaRepository<H2Classe, Long> {
-
-
+    extends JpaRepository<H2Classe, Long> {
 
     @Query(value = "SELECT * FROM H2_CLASSE",
         nativeQuery = true)
     Page<H2Classe> getByAll(Pageable pageable);
-
-
 
     @Query(value = """
         SELECT *
         FROM H2_CLASSE
         WHERE CLASSE LIKE :classe
         """,
-    nativeQuery = true)
+        nativeQuery = true)
     List<H2Classe> getByClasseContaining(String classe, Pageable pageable);
-
-
-
 
     @Query(value = """
         SELECT *
@@ -39,17 +32,12 @@ public interface H2CLasseRepository
         nativeQuery = true)
     H2Classe getByClasseId(String classe);
 
-
-
-
     @Query(value = """
         SELECT *
         FROM H2_CLASSE
         WHERE GRUPO = :grupo""",
-    nativeQuery = true)
+        nativeQuery = true)
     List<H2Classe> getByGrupoList(String grupo);
-
-
 
 /*
 @Query(value = "SELECT S.GRUPO\n" +
@@ -64,6 +52,5 @@ public interface H2CLasseRepository
         "FROM H2_CLASSE S",
         nativeQuery = true)
  */
-
 
 }
