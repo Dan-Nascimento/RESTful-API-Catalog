@@ -15,7 +15,8 @@
     <version>1.0.0</version>
     <name>servcat-api</name>
     <packaging>${p-type}</packaging>
-    <description>Catálogo de Itens de Suprimentos NATO/FEDLOG</description>
+<!--    https://programandosemcafeina.blogspot.com/2007/04/caracteres-especiais-representados-em.html-->
+    <description>Cat\u00e1logo de Itens de Suprimentos NATO/FEDLOG</description>
     <properties>
         <java.version>17</java.version>
         <org.projectlombok.version>1.18.28</org.projectlombok.version>
