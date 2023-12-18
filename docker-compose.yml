@@ -1,0 +1,39 @@
+version: "3.3"
+
+networks:
+  servcat-network:
+    driver: bridge
+
+#volumes:
+#  prometheus_data:
+#  grafana_data:
+
+services:
+  servcat-api:
+    container_name: servcat.api
+    build:
+      context: .
+      dockerfile: docker/openjdk/Dockerfile
+    image: servcat-api:1.0.0
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    networks:
+      - servcat-network
+#  prometheus:
+#    container_name: prometheus-servcat.api
+#    image: prom/prometheus:v2.47.0
+#    volumes:
+#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#      - prometheus_data:/prometheus
+#    networks:
+#      - api-network
+#    ports:
+#      - "9090:9090"
+#  grafana:
+#    container_name: grafana-servcat.api
+#    image: grafana/grafana:10.1.4
+#    ports:
+#      - 3000:3000
+#    networks:
+#      - api-network

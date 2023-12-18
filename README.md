@@ -1,7 +1,5 @@
 # SERVCAT API
 
-![](wiki/assets/webservice-siscatbr-1.png)
-
 ## Propósito:
 
 O Webservice...
@@ -9,32 +7,9 @@ O Webservice...
 ## Informações Técnicas
 
 - **JAVA 17+**
-
 - **Maven 3.9+**
-
 - **Arquitetura: REST** - (Representational State Transfer)
-
 - **Formato de Serialização de Dados: JSON** (JavaScript Object Notation)
-
-  
-
-## Documentação do Projeto
-
-1. XXX
-
-### Utilizando Git e Gitflow para instalação do Projeto:
-
-Este projeto está trabalhando com o **Git Flow**, portanto para que tenha um melhor aproveitamento favor executar os procedimentos conforme orientação na página abaixo.
-
-1. [Tutorial do Git e Git-Flow](wiki/README.md)
-
-#### Clonado o Projeto
-
-##### Requisitos
-
-- Ter uma conta válida no site do [GitLab](http://www.gitlab.com)
-- Se possível ter cadastrado as chaves SSH da máquina no seu profile do site.
-- Clonando o projeto no repositório do [https://gitlab.com/mar-dabm/dep-60/siscatbr.git](https://gitlab.com/mar-dabm/dep-60/siscatbr.git)
 
 ```bash
 # Clonando o projeto do site
@@ -59,8 +34,6 @@ git config --list
 ```
 
 ##### Criando um chave SSH Para criar uma chave privada/publica no git:
-
-Para cadastrar uma chave privado no seu computador proceda conforme comandos abaixo. Após será necessário copiar a chave pública e disponibilizar em seu profile na conta criada no [Git Lab](https://gitlab.com/profile/keys).
 
 ```bash
 ssh-keygen -t rsa -C "seuemails@provedor.com"
@@ -91,7 +64,7 @@ mvn spring-boot:run
 
 # caso desejar rodar pela IDE
 # Isso pode ser feito usando Run da IDE em:
-singra-siscatbr-api\src\main\java\mb\dabm\servcatapi\ServcatApiApplication.java
+servcat-api\src\main\java\mb\dabm\servcatapi\ServcatApiApplication.java
 ```
 
 #### Gerando o WAR:
@@ -104,22 +77,28 @@ Certifique-se de o arquivo `pom.xml` está configurado com a tag `packaging` par
 # E digite os camandos:
 mvn clean package
 mvn package
+# sem testes
 mvn package -Dmaven.test.skip
-#Se tudo correr certo deve aparecer no final uma mensagem  como esta:
-...
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 21.051 s
-[INFO] Finished at: 2019-09-19T16:38:43-03:00
-[INFO] ------------------------------------------------------------------------
+# ou
+mvn clean -DskipTests package
+
 # se gerou o arquivo .jar para executar será o comando:
-java -jar target/nome-arquivo-java.jar
+java -jar target/servcat-api.jar
 # ou caso queira alterar algum parametro do resource
 # ex.: alterar usuario/senha banco
-java -jar nome-arquivo-java.jar --spring.datasource.username=root --spring.datasource.password=root
+java -jar servcat-api.jar --spring.datasource.username=root --spring.datasource.password=root
 # para alterar ambiente de execucao:
-java -jar -Dspring.profiles.active=dev1 nome-arquivo-java.jar
+java -jar -Dspring.profiles.active=dev servcat-api.jar
+# ou
+java -jar -Dspring.profiles.active=prod servcat-api.jar
+
+mvn package -Dp-type=jar
+
+mvn -DskipTests spring-boot:build-image
+# esta habilitado para gera o war direto, se precisar gerar o jar basta executar o comando abaixo:
+mvn install -Dp-type=jar
+# war (opcional)
+mvn install -Dp-type=war
 ```
 
 #### caso desejar altera o nome do arquivo 'war' ou 'jar' na complicação
@@ -131,13 +110,7 @@ Alterar a tag `finalName` dentro do arquivo `pom.xml`
 <build>
     <finalName>servcat-api</finalName>
     <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
+        ...
     </plugins>
 </build>
 ```
-
-
-
