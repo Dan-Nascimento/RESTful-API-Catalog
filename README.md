@@ -77,22 +77,28 @@ Certifique-se de o arquivo `pom.xml` está configurado com a tag `packaging` par
 # E digite os camandos:
 mvn clean package
 mvn package
+# sem testes
 mvn package -Dmaven.test.skip
-#Se tudo correr certo deve aparecer no final uma mensagem  como esta:
-...
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 21.051 s
-[INFO] Finished at: 2019-09-19T16:38:43-03:00
-[INFO] ------------------------------------------------------------------------
+# ou
+mvn clean -DskipTests package
+
 # se gerou o arquivo .jar para executar será o comando:
-java -jar target/nome-arquivo-java.jar
+java -jar target/servcat-api.jar
 # ou caso queira alterar algum parametro do resource
 # ex.: alterar usuario/senha banco
-java -jar nome-arquivo-java.jar --spring.datasource.username=root --spring.datasource.password=root
+java -jar servcat-api.jar --spring.datasource.username=root --spring.datasource.password=root
 # para alterar ambiente de execucao:
-java -jar -Dspring.profiles.active=dev1 nome-arquivo-java.jar
+java -jar -Dspring.profiles.active=dev servcat-api.jar
+# ou
+java -jar -Dspring.profiles.active=prod servcat-api.jar
+
+mvn package -Dp-type=jar
+
+mvn -DskipTests spring-boot:build-image
+# esta habilitado para gera o war direto, se precisar gerar o jar basta executar o comando abaixo:
+mvn install -Dp-type=jar
+# war (opcional)
+mvn install -Dp-type=war
 ```
 
 #### caso desejar altera o nome do arquivo 'war' ou 'jar' na complicação
@@ -104,10 +110,7 @@ Alterar a tag `finalName` dentro do arquivo `pom.xml`
 <build>
     <finalName>servcat-api</finalName>
     <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
+        ...
     </plugins>
 </build>
 ```

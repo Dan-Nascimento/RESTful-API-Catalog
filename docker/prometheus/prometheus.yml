@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: "servcat-api-job"
+    metrics_path: "/actuator/prometheus"
+#    metrics_path: "/api-siscatbr-singra-prod/actuator/prometheus"
+    scheme: https
+    basic_auth:
+      username: "servcat"
+      password: "s3rvc@t"
+    tls_config:
+      # ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecure_skip_verify: true
+    static_configs:
+      - targets:
+          - "servcat-api:8080"
+          #- "siscatbr-prod.eb.mil.br"
+          #- "localhost:8443"
+          #- "host.docker.internal:8443"
+        labels:
+          application: "servcat-api"

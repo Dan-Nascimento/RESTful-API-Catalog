@@ -1,5 +1,6 @@
 package mb.dabm.servcatapi.configuration.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,6 +16,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class ApiSecurityConfig {
+
+    @Value("${app.user}")
+    String appUser;
+    @Value("${app.password}")
+    String appPassword;
+
+    @Value("${app.admin.user}")
+    String appAdminUser;
+
+    @Value("${app.admin.password}")
+    String appAdminPassword;
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -46,15 +58,19 @@ public class ApiSecurityConfig {
 
         // responsável para visualizar registros do NMCRL.
         UserDetails servcat = User.builder()
-            .username("servcat")
-            .password(passwordEncoder().encode("s3rvc@t"))
+//            .username("servcat")
+            .username(appUser)
+//            .password(passwordEncoder().encode("s3rvc@t"))
+            .password(passwordEncoder().encode(appPassword))
             .roles("USER")
             .build();
 
         // responsável para cadastrar registros do NMCRL.
         UserDetails admin = User.builder()
-            .username("admin")
-            .password(passwordEncoder().encode("nmcrl@dabm"))
+//            .username("admin")
+            .username(appAdminUser)
+//            .password(passwordEncoder().encode("nmcrl@dabm"))
+            .password(passwordEncoder().encode(appAdminPassword))
             .roles("admin")
             .build();
 
