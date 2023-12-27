@@ -18,6 +18,8 @@
     <!--    https://programandosemcafeina.blogspot.com/2007/04/caracteres-especiais-representados-em.html-->
     <description>Cat\u00e1logo de Itens de Suprimentos NATO/FEDLOG</description>
     <properties>
+        <!-- The main class to start by executing java -jar -->
+        <start-class>mb.dabm.servcatapi.ServcatApiApplication</start-class>
         <java.version>17</java.version>
         <org.projectlombok.version>1.18.28</org.projectlombok.version>
         <p-type>war</p-type>
@@ -41,6 +43,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- marked the embedded servlet container as provided -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
