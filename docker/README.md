@@ -16,7 +16,7 @@ java -version
 # JAVA_HOME
 setx /M JAVA_HOME "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2"
 setx /M JAVA_HOME "C:\Users\anders\scoop\apps\corretto-lts-jdk\current"
-setx -m PATH "%PATH%;%JAVA_HOME%\bin";
+setx /M PATH "%PATH%;%JAVA_HOME%\bin";
 echo %JAVA_HOME%
 ###
 ### no powershell windows - prompt de comando ###
@@ -25,14 +25,23 @@ $env:Path -split ';'
 #ou
 dir env:
 # exemplo:
-PS C:\> [Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\Anders\scoop\apps\openjdk17\current")
-PS C:\> $env:JAVA_HOME
-C:\Program Files\Java\jdk1.8.0_301
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current")
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2")
+# set var no powershell 7
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current", "User")
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current", "Machine")
+#ou
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2", "User")
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2", "Machine")
+$env:JAVA_HOME
+
 # Definindo a variável de ambiente persistentemente
 # usa a classe [System.Environment] com o método SetEnvironmentVariable para que 
 # a variável de ambiente a defina persistentemente na sessão do usuário
+[System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";%JAVA_HOME%\bin", "User")
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$($Env:JAVA_HOME)\bin", "User")
 # a variável de ambiente a defina persistentemente na sessão do sistema
+[System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";JAVA_HOME\bin", "Machine")
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$($Env:JAVA_HOME)\bin", "Machine")
 ###
 # limpar projeto
@@ -43,7 +52,7 @@ mvn clean -DskipTests package
 # recompilar e executar os testes
 mvn package
 
-mvn package -Dp-type=jar
+mvn package -Dp-type=jar -DskipTests
 mvn -DskipTests spring-boot:build-image
 # esta habilitado para gera o war direto, se precisar gerar o jar basta executar o comando abaixo:
 mvn install -Dp-type=jar
@@ -76,16 +85,17 @@ docker-compose up -d
 # em outro terminal caso a tela esteja travada nos logs
 # para VRF containers com formatação
 docker ps --format '{{.ID}}\t{{.Names}}\t{{.Status}}'
+docker-compose ps --format '{{.ID}}\t{{.Names}}\t{{.Status}}'
 # ou
 docker-compose ps --format '{{.ID}}\t{{.Names}}\t{{.Status}}'
 # para visualizar os logs do container do siscat-br
 docker logs --since=1h servcat.api
 # por linhas
 docker logs --tail 100 servcat.api
-
 # para visualizar os containers de monitoramento:
-docker logs --since=1h grafana.api
-docker logs --since=1h prometheus.api
+docker logs --since=1h servcat.api
+#docker logs --since=1h grafana.api
+#docker logs --since=1h prometheus.api
 
 # Aborting on container exit...
 press Ctrl+C
