@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import java.util.Properties;
 
 @RestController
 @RequestMapping(value ="api", produces = "application/json")
@@ -16,6 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @Tag(name = "WelcomeController Para verificações da API SERVCAT")
 public class WelcomeController {
+
+    @GetMapping({"/", ""})
+    @ResponseBody
+    public String status() throws EntityNotFoundException {
+        return "API SERVCAT com Spring Boot";
+    }
 
     /**
      *
@@ -28,10 +37,14 @@ public class WelcomeController {
         return "API SERVCAT com Spring Security In-memory Authentication - Welcome " + userName;
     }
 
-    @GetMapping({"/", ""})
-    @ResponseBody
-    public String status() throws EntityNotFoundException {
-          return "API SERVCAT com Spring Boot";
+    @GetMapping({"/status", "/status/"})
+    public MappingJackson2JsonView status1() throws EntityNotFoundException {
+        MappingJackson2JsonView view = new MappingJackson2JsonView();
+        Properties props = new Properties();
+        props.put("status", "UP");
+        view.setAttributes(props);
+        view.setPrettyPrint(true);
+        return view;
     }
 
 }
