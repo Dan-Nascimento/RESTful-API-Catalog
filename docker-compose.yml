@@ -14,8 +14,44 @@ services:
     ports:
       - "8080:8080"
       - "8443:8443"
-#    restart: on-failure
-#    environment:
-#        TZ: America/Sao_Paulo
+    volumes:
+        # para o projeto ficar como path: /servcat-api/
+        #- ./target/servcat-api.war:/usr/local/tomcat/webapps/servcat-api.war
+        # para ficar como root o projeto no tomcat
+        - ./target/servcat-api.war:/usr/local/tomcat/webapps/ROOT.war
+        - ./docker/tomcat/logs:/usr/local/tomcat/logs
+    restart: on-failure
+    environment:
+        TZ: America/Sao_Paulo
     networks:
       - servcat-network
+# se precisar usar como java -jar, comente o código acima e descomente o abaixo
+#  servcat.api:
+#      container_name: servcat.api
+#      build:
+#          context: ..
+#          dockerfile: openjdk/Dockerfile
+#      image: servcat-api:1.0.0
+#      ports:
+#          - "8080:8080"
+#          - "8443:8443"
+#      networks:
+#          - servcat-network
+  prometheus:
+      container_name: prometheus-servcat.api
+      image: prom/prometheus:v2.47.0
+      volumes:
+          - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+          - prometheus_data:/prometheus
+      networks:
+          - servcat-network
+      ports:
+          - "9090:9090"
+# para testes de monitoração descomente o código abaixo
+#  grafana:
+#      container_name: grafana-servcat.api
+#      image: grafana/grafana:10.1.4
+#      ports:
+#          - "3000:3000"
+#      networks:
+#          - servcat-network

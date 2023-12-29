@@ -59,8 +59,19 @@ mvn install -Dp-type=jar
 # war (opcional)
 mvn install -Dp-type=war
 
-# rodanda a aplicação criada sem o docker
+# rodando a aplicação criada sem o docker
 java -jar .\target\api-siscatbr-singra-prod.jar
+
+# testando conexão bd oracle
+# Local
+sqlplus fedlogdb/fedlogdb@CATALOP1.PROGNUS.COM.BR
+sqlplus SINGRA/singrad4@PORTALP1.MAR.MIL.BR
+sqlplus mccprod/marinha23@//localhost:1521/SERVCAT
+sqlplus mccprod/marinha23@//10.0.0.2:1521/SERVCAT
+
+# VPN
+sqlplus mccprod/mccprod@10.11.12.151:1521/catalop1
+sqlplus ANDERS_ORACLE/marinha@10.11.12.151:1521/portalp1.mar.mil.br
 ```
 
 ## Passo 2 - Build do Docker com docker-compose:
