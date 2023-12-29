@@ -77,6 +77,11 @@ sqlplus ANDERS_ORACLE/marinha@10.11.12.151:1521/portalp1.mar.mil.br
 ## Passo 2 - Build do Docker com docker-compose:
 
 ```bash
+# comandos gerar aplicativo compilado
+# vai ser gerado o *.war
+mvn clean package -DskipTests
+# para gerar o *.jar
+mvn package -DskipTests -Dp-type=jar
 # comandos para remover resquícios anteriores do container do siscat-br
 docker-compose down
 docker volume prune

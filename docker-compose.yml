@@ -4,6 +4,10 @@ networks:
   servcat-network:
     driver: bridge
 
+volumes:
+    prometheus_servcat:
+#    grafana_data:
+
 services:
   servcat-api:
     container_name: servcat.api
@@ -38,11 +42,11 @@ services:
 #      networks:
 #          - servcat-network
   prometheus:
-      container_name: prometheus-servcat.api
+      container_name: prometheus-servcat
       image: prom/prometheus:v2.47.0
       volumes:
           - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-          - prometheus_data:/prometheus
+          - prometheus_servcat:/prometheus
       networks:
           - servcat-network
       ports:
