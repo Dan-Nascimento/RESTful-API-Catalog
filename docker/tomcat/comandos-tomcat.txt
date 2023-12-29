@@ -4,3 +4,13 @@ catalina.bat help
 catalina version # versão do tomcat
 catalina start # abre um uma nova janela
 catalina run # abre na janela corrente
+
+# para testes
+docker pull tomcat:jdk17-openjdk
+docker pull tomcat:10-jdk17
+docker pull tomcat:9.0.84-jdk17-corretto
+docker pull tomcat:9-jdk17-corretto
+docker pull tomcat:8.5-jdk17-corretto
+
+docker build -t tomcat:10-jdk17-corretto .
+docker run -it -p 8080:8080 --name my_app tomcat:10-jdk17-corretto
