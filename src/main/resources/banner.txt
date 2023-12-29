@@ -10,7 +10,8 @@
 
 ********************** DESENVOLVIDO PELA MARINHA DO BRASIL - DAbM **********************
 **** App: ${application.title}
-**** Versão: ${spring-boot.version}
+**** Application Version: ${application.version}
+**** Spring Boot Version: ${spring-boot.version}
 **** Descrição: ${application.description}
 **** URL: https://springhow.com/spring-boot-banner-generator/
 ****************************************************************************************

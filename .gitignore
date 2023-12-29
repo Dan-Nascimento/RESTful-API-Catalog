@@ -3,6 +3,11 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+docker/tomcat/*
+# exceto esses arquivos
+docker/tomcat/!Dockerfile
+docker/tomcat/!comandos-tomcat.txt
+docker/tomcat/logs/!.gitkeep
 
 ### STS ###
 .apt_generated
