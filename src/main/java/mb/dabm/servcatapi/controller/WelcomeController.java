@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 @RestController
@@ -40,7 +41,7 @@ public class WelcomeController {
         MappingJackson2JsonView view = new MappingJackson2JsonView();
 
         String time = Helper.unixEpochToDate(Long.parseLong(buildProperties.get("time")));
-        Properties props = new Properties();
+        SortedMap<String, String> props = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
         props.put("app-status", "UP");
         props.put("app-name", env.getProperty("application.title"));
@@ -53,7 +54,7 @@ public class WelcomeController {
         props.put("build-date", time);
         props.put("build-group", buildProperties.getGroup());
 
-        view.setAttributes(props);
+        view.setAttributesMap(props);
         view.setPrettyPrint(true);
         return view;
     }
