@@ -77,20 +77,21 @@ sqlplus ANDERS_ORACLE/marinha@10.11.12.151:1521/portalp1.mar.mil.br
 ## Passo 2 - Build do Docker com docker-compose:
 
 ```bash
+# comandos para remover resquícios anteriores do container do siscat-br
+docker-compose down
+docker volume ls
+docker volume prune
+docker volume rm servcat-api_prometheus_servcat
+# certifique-se de remover as images anteriores;
+# comando: docker rmi <image_name>:<version_tag>
+docker rmi servcat-api:1.0.0
 # comandos gerar aplicativo compilado
 # vai ser gerado o *.war
 mvn clean package -DskipTests
 # para gerar o *.jar
 mvn package -DskipTests -Dp-type=jar
-# comandos para remover resquícios anteriores do container do siscat-br
-docker-compose down
-docker volume prune
-docker volume rm servcat-api-data
-# certifique-se de remover as images anteriores;
-# comando: docker rmi <image_name>:<version_tag>
-docker rmi servcat-api:1.0.0
-
 # para inspecionar o arquivo que está na raiz do projeto
+mvn clean
 # executar na raiz do projeto
 docker-compose config
 # para subir os containers com visualização de logs

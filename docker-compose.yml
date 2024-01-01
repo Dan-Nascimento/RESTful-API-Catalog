@@ -20,9 +20,9 @@ services:
       - "8443:8443"
     volumes:
         # para o projeto ficar como path: /servcat-api/
-        #- ./target/servcat-api.war:/usr/local/tomcat/webapps/servcat-api.war
+        - ./target/servcat-api.war:/usr/local/tomcat/webapps/servcat-api.war
         # para ficar como root o projeto no tomcat
-        - ./target/servcat-api.war:/usr/local/tomcat/webapps/ROOT.war
+        #- ./target/servcat-api.war:/usr/local/tomcat/webapps/ROOT.war
         - ./docker/tomcat/logs:/usr/local/tomcat/logs
     restart: on-failure
     environment:
