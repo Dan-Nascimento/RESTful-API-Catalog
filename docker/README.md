@@ -7,11 +7,13 @@
 ```bash
 # JAVA_HOME paths maquina Anders
 # C:\Program Files\Java\jdk1.8.0_301
+# C:\Program Files (x86)\Common Files\Oracle\Java\javapath
 # C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2
 # C:\Users\anders\scoop\apps\corretto-lts-jdk\current
 # verificar versão global do java instalado na máquina
 java -version
 ### no cmd windows - prompt de comando ###
+# exemplo para java 17:
 # O comando setx atualiza permanentemente as variáveis de ambiente
 # JAVA_HOME
 setx /M JAVA_HOME "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2"
@@ -27,6 +29,28 @@ dir env:
 # exemplo:
 [Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current")
 [Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2")
+# set var no powershell 7
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current", "User")
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current", "Machine")
+#ou
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2", "User")
+[System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2", "Machine")
+$env:JAVA_HOME
+
+# exemplo para java 8:
+# 
+# JAVA_HOME - cmd
+setx /M JAVA_HOME "C:\Program Files\Java\jdk1.8.0_301"
+setx /M PATH "%PATH%;%JAVA_HOME%\bin";
+echo %JAVA_HOME%
+
+### no powershell windows - prompt de comando ###
+# ver as variáveis de ambiente
+$env:Path -split ';' 
+#ou
+dir env:
+# exemplo:
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Java\jdk1.8.0_301")
 # set var no powershell 7
 [System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current", "User")
 [System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\anders\scoop\apps\corretto-lts-jdk\current", "Machine")
@@ -66,6 +90,7 @@ java -jar .\target\api-siscatbr-singra-prod.jar
 # Local
 sqlplus fedlogdb/fedlogdb@CATALOP1.PROGNUS.COM.BR
 sqlplus SINGRA/singrad4@PORTALP1.MAR.MIL.BR
+sqlplus ANDERS_ORACLE/marinha@PORTALP1.MAR.MIL.BR
 sqlplus mccprod/marinha23@//localhost:1521/SERVCAT
 sqlplus mccprod/marinha23@//10.0.0.2:1521/SERVCAT
 
