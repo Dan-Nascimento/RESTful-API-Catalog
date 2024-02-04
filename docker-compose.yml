@@ -17,7 +17,7 @@ services:
     image: servcat-api:1.0.0
     ports:
       - "8080:8080"
-      - "8443:8443"
+      - "9443:8443"
     volumes:
         # para o projeto ficar como path: /servcat-api/
         - ./target/servcat-api.war:/usr/local/tomcat/webapps/servcat-api.war
@@ -50,7 +50,7 @@ services:
       networks:
           - servcat-network
       ports:
-          - "9090:9090"
+          - "9091:9090"
 # para testes de monitoração descomente o código abaixo
 #  grafana:
 #      container_name: grafana-servcat.api
