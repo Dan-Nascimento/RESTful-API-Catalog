@@ -20,6 +20,19 @@ setx /M JAVA_HOME "C:\dev\java\openjdk-17.0.2_windows-x64_bin\jdk-17.0.2"
 setx /M JAVA_HOME "C:\Users\anders\scoop\apps\corretto-lts-jdk\current"
 setx /M PATH "%PATH%;%JAVA_HOME%\bin";
 echo %JAVA_HOME%
+
+# MÁQUINA DA MB -  DAbM-62:
+# JAVA 17
+# C:\Users\Anders\scoop\apps\openjdk17\current
+# C:\dev\Java\jdk-17.0.2
+# USER
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\Anders\scoop\apps\openjdk17\current")
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\dev\Java\jdk-17.0.2")
+
+## MAQUINA DE CASA
+
+
+
 ###
 ### no powershell windows - prompt de comando ###
 # ver as variáveis de ambiente
