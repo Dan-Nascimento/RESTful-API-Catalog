@@ -9,6 +9,7 @@ import mb.dabm.servcatapi.exception.EntityNotFoundException;
 import mb.dabm.servcatapi.service.IdentificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -112,6 +113,16 @@ public class IdentificationController {
         @RequestParam(value = "size", defaultValue = "20") int size
     ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findByNiinFromInc(inc, page, size));
+    }
+
+    @PostMapping("/identifications")
+    public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification) {
+        try {
+            Identification _identification = service.createGeneral(identification);
+            return new ResponseEntity<>(_identification, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

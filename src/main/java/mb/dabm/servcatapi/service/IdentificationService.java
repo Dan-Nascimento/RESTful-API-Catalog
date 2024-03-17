@@ -45,4 +45,8 @@ public class IdentificationService {
     public Page<Identification> findByNiinFromInc(String inc, int page, int size) {
         return repository.getByNiinFromInc(inc, PageRequest.of(page, size));
     }
+
+    public Identification createGeneral(Identification identification) {
+        return repository.save(identification);
+    }
 }
