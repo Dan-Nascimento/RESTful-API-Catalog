@@ -46,7 +46,24 @@ public class IdentificationService {
         return repository.getByNiinFromInc(inc, PageRequest.of(page, size));
     }
 
+    /**
+     * Forma 1 - preferível
+     * @param identification
+     * @return
+     */
     public Identification createGeneral(Identification identification) {
         return repository.save(identification);
+    }
+
+    /**
+     * Forma 2 - opcional
+     * @param identification
+     * @return
+     */
+    public Identification insertGeneral(Identification identification) {
+
+        int rs = repository.insert(identification);
+        System.out.println("rs: " + rs);
+        return (rs >0) ? identification : null;
     }
 }

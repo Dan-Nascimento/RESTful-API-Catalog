@@ -115,12 +115,22 @@ public class IdentificationController {
         return ResponseEntity.ok(service.findByNiinFromInc(inc, page, size));
     }
 
-    @PostMapping("/identifications")
+    /**
+     * Exemplo POST
+     * @param identification
+     * @return
+     */
+    @PostMapping
     public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification) {
         try {
+            //preferível
             Identification _identification = service.createGeneral(identification);
+            // opcional
+            //Identification _identification = service.insertGeneral(identification);
+            //System.out.println("ID: " + identification.toString());
             return new ResponseEntity<>(_identification, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

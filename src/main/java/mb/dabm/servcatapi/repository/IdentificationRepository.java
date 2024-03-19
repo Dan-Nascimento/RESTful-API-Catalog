@@ -4,7 +4,10 @@ import mb.dabm.servcatapi.entity.Identification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IdentificationRepository
     extends JpaRepository<Identification, Long> {
@@ -127,5 +130,24 @@ public interface IdentificationRepository
         "WHERE INC = :inc \n",
         nativeQuery = true)
     Page<Identification> getByNiinFromInc(String inc, Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO GENERAL " +
+        "(COD_GEN, FSC, NIIN, NSN, ITEM_NAME, INC, TIIC, RPDMRC, FMSN, ORIGEM)" +
+        " VALUES " +
+        "( " +
+        ":#{#id.codGen}, " +
+        ":#{#id.fsc}, "+
+        ":#{#id.niin}, "+
+        ":#{#id.nsn}, "+
+        ":#{#id.itemName}, "+
+        ":#{#id.inc}, "+
+        ":#{#id.tiic}, "+
+        ":#{#id.rpdmrc}, "+
+        ":#{#id.fmsn}, "+
+        ":#{#id.origem} "+
+        ")", nativeQuery = true)
+    int insert(@Param("id") Identification id);
 
 }
