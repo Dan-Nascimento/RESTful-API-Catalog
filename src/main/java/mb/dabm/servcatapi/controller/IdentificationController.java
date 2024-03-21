@@ -121,18 +121,20 @@ public class IdentificationController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification) {
-        try {
+    public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification)
+        throws EntityNotFoundException {
+        //try {
             //preferível
             Identification _identification = service.createGeneral(identification);
             // opcional
             //Identification _identification = service.insertGeneral(identification);
             //System.out.println("ID: " + identification.toString());
-            return new ResponseEntity<>(_identification, HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            //return new ResponseEntity<>(_identification, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(_identification);
+       // } catch (Exception e) {
+       //     e.printStackTrace();
+        //    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+       // }
     }
 
 }

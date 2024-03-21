@@ -3,6 +3,7 @@ package mb.dabm.servcatapi.service;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import mb.dabm.servcatapi.entity.Identification;
+import mb.dabm.servcatapi.exception.EntityNotFoundException;
 import mb.dabm.servcatapi.repository.IdentificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,15 +49,21 @@ public class IdentificationService {
 
     /**
      * Forma 1 - preferível
+     *
      * @param identification
      * @return
      */
     public Identification createGeneral(Identification identification) {
-        return repository.save(identification);
+        try {
+            return repository.save(identification);
+        } catch (Exception e) {
+            throw new EntityNotFoundException(Identification.class, "id", e.getMessage(), identification.toString());
+        }
     }
 
     /**
      * Forma 2 - opcional
+     *
      * @param identification
      * @return
      */
@@ -64,6 +71,6 @@ public class IdentificationService {
 
         int rs = repository.insert(identification);
         System.out.println("rs: " + rs);
-        return (rs >0) ? identification : null;
+        return (rs > 0) ? identification : null;
     }
 }
