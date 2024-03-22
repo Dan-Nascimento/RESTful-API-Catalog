@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -13,6 +14,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,10 +30,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@Order(Ordered.HIGHEST_PRECEDENCE)
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 @Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -173,13 +180,29 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param ex the DataIntegrityViolationException
      * @return the ApiError object
      */
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex,
-                                                                  WebRequest request) {
-        if (ex.getCause() instanceof ConstraintViolationException) {
-            return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, "Database error", ex.getCause()));
-        }
-        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex));
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex,
+//                                                                  WebRequest request) {
+//        if (ex.getCause() instanceof ConstraintViolationException) {
+//            return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, "Database error", ex.getCause()));
+//        }
+//        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex));
+//    }
+
+    @ExceptionHandler({ DataIntegrityViolationException.class })
+    public ResponseEntity<Object> handleDataIntegrityViolationException(
+        DataIntegrityViolationException ex, WebRequest request)
+    {
+        String mensagemUsuario = messageSource.getMessage(
+            "recurso.operacao-nao-permitida", null,
+            LocaleContextHolder.getLocale());
+        // retorna a causa da excessao
+        String mensagemDesenvolvedor = ExceptionUtils.getRootCauseMessage(ex);
+        List<Erro> erros = Arrays
+            .asList(new Erro(mensagemUsuario, mensagemDesenvolvedor, ex.getMessage()));
+
+        return handleExceptionInternal(ex, erros, new HttpHeaders(),
+            HttpStatus.BAD_REQUEST, request);
     }
 
     /**
@@ -212,5 +235,57 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    private List<Erro> criarListaDeErros(BindingResult bindingResult)
+    {
+        List<Erro> erros = new ArrayList<>();
+
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            String mensagemUsuario = messageSource.getMessage(fieldError,
+                LocaleContextHolder.getLocale());
+            String mensagemDesenvolvedor = fieldError.toString();
+            erros.add(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+        }
+
+        return erros;
+    }
+
+    // classe interna
+    public static class Erro
+    {
+
+        private String mensagemUsuario;
+        private String mensagemDesenvolvedor;
+
+        private String message;
+
+        public Erro(String mensagemUsuario, String mensagemDesenvolvedor, String message)
+        {
+            this.mensagemUsuario = mensagemUsuario;
+            this.mensagemDesenvolvedor = mensagemDesenvolvedor;
+            this.message = message;
+        }
+
+        public Erro(String mensagemUsuario, String mensagemDesenvolvedor)
+        {
+            this.mensagemUsuario = mensagemUsuario;
+            this.mensagemDesenvolvedor = mensagemDesenvolvedor;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public String getMensagemUsuario()
+        {
+            return mensagemUsuario;
+        }
+
+        public String getMensagemDesenvolvedor()
+        {
+            return mensagemDesenvolvedor;
+        }
+
     }
 }

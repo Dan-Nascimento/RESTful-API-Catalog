@@ -68,9 +68,13 @@ public class IdentificationService {
      * @return
      */
     public Identification insertGeneral(Identification identification) {
-
-        int rs = repository.insert(identification);
-        System.out.println("rs: " + rs);
-        return (rs > 0) ? identification : null;
+        //try {
+            int rs = repository.insert(identification);
+            //System.out.println("rs: " + rs);
+            return (rs > 0) ? identification : null;
+        //} catch (Exception e) {
+            //throw new EntityNotFoundException(Identification.class, "id", identification.toString());
+        //    throw new EntityNotFoundException(Identification.class, "id", identification.toString());
+        //}
     }
 }
