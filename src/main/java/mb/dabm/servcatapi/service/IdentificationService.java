@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Data
 @AllArgsConstructor
@@ -25,6 +27,20 @@ public class IdentificationService {
         return repository.getReferenceById(id);
     }
 
+    /**
+     * @param cod_gen
+     * @return
+     */
+    public Optional<Identification> findById(long id) {
+        return repository.findById(id);
+    }
+
+    /**
+     * @param cod_gen
+     */
+    public void deleteById(long id) {
+        repository.deleteById(id);
+    }
 
     public Page<Identification> findByNiinLike(String niin, int page, int size) {
         return repository.getByNiinLike(niin, PageRequest.of(page, size));
@@ -44,5 +60,26 @@ public class IdentificationService {
 
     public Page<Identification> findByNiinFromInc(String inc, int page, int size) {
         return repository.getByNiinFromInc(inc, PageRequest.of(page, size));
+    }
+
+    /**
+     * Forma 1 - preferível
+     *
+     * @param identification
+     * @return
+     */
+    public Identification createGeneral(Identification identification) {
+        return repository.save(identification);
+    }
+
+    /**
+     * Forma 2 - opcional com SQL NATIVE
+     *
+     * @param identification
+     * @return Identification | null
+     */
+    public Identification insertGeneral(Identification identification) {
+        int rs = repository.insert(identification);
+        return (rs > 0) ? identification : null;
     }
 }
