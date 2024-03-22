@@ -2,16 +2,19 @@ package mb.dabm.servcatapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import mb.dabm.servcatapi.entity.Identification;
-import mb.dabm.servcatapi.exception.EntityNotFoundException;
+import mb.dabm.servcatapi.repository.IdentificationRepository;
 import mb.dabm.servcatapi.service.IdentificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/identifications")
@@ -32,7 +35,7 @@ public class IdentificationController {
     public ResponseEntity<Page<Identification>> listAll(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) throws EntityNotFoundException {
+    ) {
         return ResponseEntity.ok(service.findAll(page, size));
     }
 
@@ -58,7 +61,7 @@ public class IdentificationController {
         @PathVariable("niin") String niin,
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) throws EntityNotFoundException {
+    ) {
         return ResponseEntity.ok(service.findByNiinLike(niin, page, size));
     }
 
@@ -70,7 +73,7 @@ public class IdentificationController {
     @Operation(summary = "Retorna um único item buscado por ID na coluna NIIN da tabela GENERAL")
     public ResponseEntity<Identification> listIdentificationByNiinId(
         @PathVariable("niin") String niin
-    ) throws EntityNotFoundException {
+    ) {
         return ResponseEntity.ok(service.findByNiinId(niin));
     }
 
@@ -83,7 +86,7 @@ public class IdentificationController {
     public ResponseEntity<Page<Identification>> listIdentificationByNiinAll(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) throws EntityNotFoundException {
+    ) {
         return ResponseEntity.ok(service.findByAllNiin(page, size));
     }
 
@@ -97,7 +100,7 @@ public class IdentificationController {
         @PathVariable("fsc") String fsc,
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) throws EntityNotFoundException {
+    ) {
         return ResponseEntity.ok(service.findByNiinFromFsc(fsc, page, size));
     }
 
@@ -111,31 +114,112 @@ public class IdentificationController {
         @PathVariable("inc") String inc,
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) throws EntityNotFoundException {
+    ) {
         return ResponseEntity.ok(service.findByNiinFromInc(inc, page, size));
     }
 
     /**
      * Exemplo POST
+     *
      * @param identification
      * @return
      */
     @PostMapping
-    public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification)
-       // throws Exception
-    {
-        //try {
-            //preferível
-            //Identification _identification = service.createGeneral(identification);
-            // opcional
-            Identification _identification = service.insertGeneral(identification);
-            //System.out.println("ID: " + identification.toString());
-            //return new ResponseEntity<>(_identification, HttpStatus.CREATED);
-            return ResponseEntity.status(HttpStatus.CREATED).body(_identification);
-       // } catch (Exception e) {
-       //     e.printStackTrace();
-        //    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-       // }
+    public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification) {
+
+        //preferível
+        Identification _identification = service.createGeneral(identification);
+        // opcional
+        //Identification _identification = service.insertGeneral(identification);
+        //System.out.println("ID: " + identification.toString());
+        //return new ResponseEntity<>(_identification, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(_identification);
     }
 
+    /**
+     * Exemplo PUT
+     * @param cod_gen
+     * @param general
+     * @return
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Identification> updateIDGeneral(@PathVariable("id") long id,
+                                                          @RequestBody Identification general) {
+        Optional<Identification> identificationData = service.findById(id);
+
+        if (identificationData.isPresent()) {
+            Identification _i = identificationData.get();
+            _i.setCodGen(id);
+            _i.setFsc(general.getFsc());
+            _i.setNiin(general.getNiin());
+            _i.setNsn(general.getNsn());
+            _i.setItemName(general.getItemName());
+            _i.setInc(general.getInc());
+            _i.setTiic(general.getTiic());
+            _i.setRpdmrc(general.getRpdmrc());
+            _i.setFmsn(general.getFmsn());
+            _i.setMgmtPmi(general.getMgmtPmi());
+            _i.setMgmtAdp(general.getMgmtAdp());
+            _i.setMgmtDml(general.getMgmtDml());
+            _i.setMgmtEsdc(general.getMgmtEsdc());
+            _i.setMgmtCc(general.getMgmtCc());
+            _i.setMgmtHmic(general.getMgmtHmic());
+            _i.setOrigem(general.getOrigem());
+
+            return new ResponseEntity<>(service.createGeneral(_i), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Exemplo PUT
+     * @param niin
+     * @param general
+     * @return
+     */
+    @PutMapping("/niin/{niin}")
+    public ResponseEntity<Identification> updateNiinGeneral(@PathVariable("niin") String niin,
+                                                          @RequestBody Identification general) {
+        Optional<Identification> identificationData = Optional.ofNullable(service.findByNiinId(niin));
+
+        if (identificationData.isPresent()) {
+            Identification _i = identificationData.get();
+            _i.setCodGen(general.getCodGen());
+            _i.setFsc(general.getFsc());
+            _i.setNiin(niin);
+            _i.setNsn(general.getNsn());
+            _i.setItemName(general.getItemName());
+            _i.setInc(general.getInc());
+            _i.setTiic(general.getTiic());
+            _i.setRpdmrc(general.getRpdmrc());
+            _i.setFmsn(general.getFmsn());
+            _i.setMgmtPmi(general.getMgmtPmi());
+            _i.setMgmtAdp(general.getMgmtAdp());
+            _i.setMgmtDml(general.getMgmtDml());
+            _i.setMgmtEsdc(general.getMgmtEsdc());
+            _i.setMgmtCc(general.getMgmtCc());
+            _i.setMgmtHmic(general.getMgmtHmic());
+            _i.setOrigem(general.getOrigem());
+
+            return new ResponseEntity<>(service.createGeneral(_i), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Exemplo DELETE
+     * @param cod_gen
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
+        Optional<Identification> productO = service.findById(id);
+        if (productO.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        service.deleteById(productO.get().getCodGen());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

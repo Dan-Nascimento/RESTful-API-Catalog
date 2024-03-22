@@ -5,7 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
@@ -30,9 +34,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -44,6 +51,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private MessageSource messageSource;
+    @Value("${info.app.version}")
+    private String version;
+    @Autowired
+    private ErrorAttributes errorAttributes;
+    @Value("${debug}")
+    private boolean debug;
+
+
+
+    @ExceptionHandler({ DataIntegrityViolationException.class })
+    public ResponseEntity<Object> handleDataIntegrityViolationException(
+        DataIntegrityViolationException ex, WebRequest request)
+    {
+        String mensagemUsuario = messageSource.getMessage(
+            "recurso.operacao-nao-permitida", null,
+            LocaleContextHolder.getLocale());
+        // retorna a causa da excessao
+        String mensagemDesenvolvedor = ExceptionUtils.getRootCauseMessage(ex);
+        List<Erro> erros = Arrays
+            .asList(new Erro(mensagemUsuario, mensagemDesenvolvedor, ex.getMessage()));
+
+        return handleExceptionInternal(ex, erros, new HttpHeaders(),
+            HttpStatus.BAD_REQUEST, request);
+    }
+
+    /// refactor Anders
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
@@ -56,7 +89,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
-        return buildResponseEntity(new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2), ex));
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getDetailMessageCode())
+            .withMessage(ex.getMessage())
+            .withError_code(status.value())
+            .withStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+            .withVersion(version)
+            .withPath(request.getContextPath())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+//        return buildResponseEntity(new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+//            builder.substring(0, builder.length() - 2), ex))
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -66,8 +113,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatusCode status,
         WebRequest request) {
         //return super.handleHttpRequestMethodNotSupported(ex, headers, status, request);
-        String error = ex.getMethod()+ " parameter is missing";
-        return buildResponseEntity(new ApiError(BAD_REQUEST, error, ex));
+        //String error = ex.getMethod()+ " parameter is missing";
+        //return buildResponseEntity(new ApiError(BAD_REQUEST, error, ex));
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getDetailMessageCode())
+            .withMessage(ex.getMessage())
+            .withError_code(status.value())
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(request.getContextPath())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -86,8 +146,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatusCode status,
         WebRequest request) {
 
-        String error = ex.getParameterName() + " parameter is missing";
-        return buildResponseEntity(new ApiError(BAD_REQUEST, error, ex));
+//        String error = ex.getParameterName() + " parameter is missing";
+//        return buildResponseEntity(new ApiError(BAD_REQUEST, error, ex));
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getDetailMessageCode())
+            .withMessage(ex.getMessage())
+            .withError_code(status.value())
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(request.getContextPath())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+
     }
 
     /**
@@ -108,8 +181,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
         log.info("{} to {}", servletWebRequest.getHttpMethod(), servletWebRequest.getRequest().getServletPath());
+
         String error = messageSource.getMessage("json.malformed", null, LocaleContextHolder.getLocale());
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex));
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getMessage() + ex.getLocalizedMessage())
+            .withMessage(error)
+            .withError_code(status.value())
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(request.getContextPath())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+
+        //return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex));
     }
 
     @Override
@@ -119,11 +207,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatusCode status,
         WebRequest request) {
 
-        ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(messageSource.getMessage("error.validation", null, LocaleContextHolder.getLocale()));
-        apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
-        apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
-        return buildResponseEntity(apiError);
+//        ApiError apiError = new ApiError(BAD_REQUEST);
+//        apiError.setMessage(messageSource.getMessage("error.validation", null, LocaleContextHolder.getLocale()));
+//        apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
+//        apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
+
+        String error = messageSource.getMessage("error.validation", null, LocaleContextHolder.getLocale());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getDetailMessageCode())
+            .withMessage(error + " | " + ex.getMessage())
+            .withError_code(status.value())
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(request.getContextPath())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+
+        //return buildResponseEntity(apiError);
     }
 
     /**
@@ -135,10 +239,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     protected ResponseEntity<Object> handleConstraintViolation(
         jakarta.validation.ConstraintViolationException ex) {
-        ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(messageSource.getMessage("error.validation", null, LocaleContextHolder.getLocale()));
-        apiError.addValidationErrors(ex.getConstraintViolations());
-        return buildResponseEntity(apiError);
+//        ApiError apiError = new ApiError(BAD_REQUEST);
+//        apiError.setMessage(messageSource.getMessage("error.validation", null, LocaleContextHolder.getLocale()));
+//        apiError.addValidationErrors(ex.getConstraintViolations());
+//        return buildResponseEntity(apiError);
+
+        String error = messageSource.getMessage("error.validation", null, LocaleContextHolder.getLocale());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getConstraintViolations().toString())
+            .withMessage(error + " | " + ex.getMessage())
+            .withError_code(404)
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -149,9 +268,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
-        ApiError apiError = new ApiError(NOT_FOUND);
-        apiError.setMessage(ex.getMessage());
-        return buildResponseEntity(apiError);
+//        ApiError apiError = new ApiError(NOT_FOUND);
+//        apiError.setMessage(ex.getMessage());
+//        return buildResponseEntity(apiError);
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getStackTrace().toString())
+            .withMessage(ex.getMessage())
+            .withError_code(404)
+            .withStatus(HttpStatus.NOT_FOUND)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+
     }
 
     /**
@@ -171,7 +304,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         WebRequest request) {
         //return super.handleHttpMessageNotWritable(ex, headers, status, request);
         String error = messageSource.getMessage("json.error.w", null, LocaleContextHolder.getLocale());
-        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, error, ex));
+//        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, error, ex));
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getStackTrace().toString())
+            .withMessage(error + " | " + ex.getMessage())
+            .withError_code(status.value())
+            .withStatus(HttpStatus.NOT_FOUND)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -189,21 +335,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 //        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex));
 //    }
 
-    @ExceptionHandler({ DataIntegrityViolationException.class })
-    public ResponseEntity<Object> handleDataIntegrityViolationException(
-        DataIntegrityViolationException ex, WebRequest request)
-    {
-        String mensagemUsuario = messageSource.getMessage(
-            "recurso.operacao-nao-permitida", null,
-            LocaleContextHolder.getLocale());
-        // retorna a causa da excessao
-        String mensagemDesenvolvedor = ExceptionUtils.getRootCauseMessage(ex);
-        List<Erro> erros = Arrays
-            .asList(new Erro(mensagemUsuario, mensagemDesenvolvedor, ex.getMessage()));
 
-        return handleExceptionInternal(ex, erros, new HttpHeaders(),
-            HttpStatus.BAD_REQUEST, request);
-    }
 
     /**
      * Handle Exception, handle generic Exception.class
@@ -214,10 +346,26 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
                                                                       WebRequest request) {
-        ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(String.format("The parameter '%s' of value '%s' could not be converted to type '%s'", ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName()));
-        apiError.setDebugMessage(ex.getMessage());
-        return buildResponseEntity(apiError);
+//        ApiError apiError = new ApiError(BAD_REQUEST);
+//        apiError.setMessage(String.format("The parameter '%s' of value '%s' could not be converted to type '%s'", ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName()));
+//        apiError.setDebugMessage(ex.getMessage());
+//        return buildResponseEntity(apiError);
+
+        String error = String.format("The parameter '%s' of value '%s' could not be converted to type '%s'", ex.getName(),
+            ex.getValue(), ex.getRequiredType().getSimpleName());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getValue().toString())
+            .withMessage(error + " | " + ex.getMessage())
+            .withError_code(404)
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -227,14 +375,112 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatusCode status,
         WebRequest request) {
         //return super.handleNoHandlerFoundException(ex, headers, status, request);
-        ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL()));
-        apiError.setDebugMessage(ex.getMessage());
-        return buildResponseEntity(apiError);
+//        ApiError apiError = new ApiError(BAD_REQUEST);
+//        apiError.setMessage(String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL()));
+//        apiError.setDebugMessage(ex.getMessage());
+//        return buildResponseEntity(apiError);
+        String error = String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getDetailMessageCode())
+            .withMessage(error + " | " + ex.getMessage())
+            .withError_code(404)
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(apiError, apiError.getStatus());
+    //@Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter
+        (MissingServletRequestParameterException ex,
+         HttpHeaders headers, HttpStatus status,
+         WebRequest request) {
+
+        //String local = Utils.getUriError(request.toString());
+
+        ErrorJson e = new ErrorJson(HttpStatus.NOT_FOUND.value(), getErrorAttributes(request, debug));
+
+//        errorMessages = new CustomErrorMessages("Parâmetro inexistente na " + local,
+//            HttpStatus.NOT_FOUND.value());
+
+
+        return handleExceptionInternal(ex, e, headers, HttpStatus.NOT_FOUND, request);
+    }
+
+    //@Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+                                                        HttpStatus status, WebRequest request) {
+
+        //String local = Utils.getUriError(request.toString());
+//        errorMessages = new CustomErrorMessages("Tipo de parâmentro errado na " + local,
+//            HttpStatus.BAD_REQUEST.value());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getPropertyName())
+            .withMessage(ex.getMessage())
+            .withError_code(status.value())
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return handleExceptionInternal(ex, apiError, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler({ SQLException.class })
+    public ResponseEntity<Object> handleSqlException(SQLException ex, WebRequest request) {
+       // String local = Utils.getUriError(request.toString());
+
+//        errorMessages = new CustomErrorMessages("Erro inseperado ao executar consulta na " + local,
+//            HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getSQLState())
+            .withMessage(ex.getMessage())
+            .withError_code(500)
+            .withStatus(HttpStatus.CONFLICT)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler({ IndexOutOfBoundsException.class })
+    public ResponseEntity<Object> handleIndexOutOfBoundsException(IndexOutOfBoundsException ex, WebRequest request) {
+        //String local = Utils.getUriError(request.toString());
+
+//        errorMessages = new CustomErrorMessages("Erro inseperado ao executar consulta na " + local,
+//            HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        var apiError = new ApiErrorResponse.ApiErrorResponseBuilder()
+            .withDetail(ex.getStackTrace().toString())
+            .withMessage(ex.getMessage())
+            .withError_code(500)
+            .withStatus(HttpStatus.CONFLICT)
+            .withVersion(version)
+            .withPath(ex.getCause().getMessage())
+            .atTime(LocalDateTime.now())
+            .build()
+            ;
+
+        return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    private Map<String, Object> getErrorAttributes(WebRequest request, boolean includeStackTrace) {
+        return errorAttributes.getErrorAttributes(request,
+            includeStackTrace
+                ? ErrorAttributeOptions.defaults().including(ErrorAttributeOptions.Include.STACK_TRACE)
+                : ErrorAttributeOptions.defaults().excluding(ErrorAttributeOptions.Include.STACK_TRACE));
     }
 
     private List<Erro> criarListaDeErros(BindingResult bindingResult)

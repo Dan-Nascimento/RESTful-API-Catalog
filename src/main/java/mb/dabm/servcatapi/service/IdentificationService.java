@@ -3,12 +3,13 @@ package mb.dabm.servcatapi.service;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import mb.dabm.servcatapi.entity.Identification;
-import mb.dabm.servcatapi.exception.EntityNotFoundException;
 import mb.dabm.servcatapi.repository.IdentificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Data
@@ -26,6 +27,20 @@ public class IdentificationService {
         return repository.getReferenceById(id);
     }
 
+    /**
+     * @param cod_gen
+     * @return
+     */
+    public Optional<Identification> findById(long id) {
+        return repository.findById(id);
+    }
+
+    /**
+     * @param cod_gen
+     */
+    public void deleteById(long id) {
+        repository.deleteById(id);
+    }
 
     public Page<Identification> findByNiinLike(String niin, int page, int size) {
         return repository.getByNiinLike(niin, PageRequest.of(page, size));
@@ -54,27 +69,17 @@ public class IdentificationService {
      * @return
      */
     public Identification createGeneral(Identification identification) {
-        try {
-            return repository.save(identification);
-        } catch (Exception e) {
-            throw new EntityNotFoundException(Identification.class, "id", e.getMessage(), identification.toString());
-        }
+        return repository.save(identification);
     }
 
     /**
-     * Forma 2 - opcional
+     * Forma 2 - opcional com SQL NATIVE
      *
      * @param identification
-     * @return
+     * @return Identification | null
      */
     public Identification insertGeneral(Identification identification) {
-        //try {
-            int rs = repository.insert(identification);
-            //System.out.println("rs: " + rs);
-            return (rs > 0) ? identification : null;
-        //} catch (Exception e) {
-            //throw new EntityNotFoundException(Identification.class, "id", identification.toString());
-        //    throw new EntityNotFoundException(Identification.class, "id", identification.toString());
-        //}
+        int rs = repository.insert(identification);
+        return (rs > 0) ? identification : null;
     }
 }

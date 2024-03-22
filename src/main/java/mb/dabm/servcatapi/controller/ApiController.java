@@ -1,9 +1,9 @@
 package mb.dabm.servcatapi.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import mb.dabm.servcatapi.exception.EntityNotFoundException;
 import mb.dabm.servcatapi.helper.Helper;
 import mb.dabm.servcatapi.model.ApiInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
