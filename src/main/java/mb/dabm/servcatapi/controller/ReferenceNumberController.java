@@ -5,14 +5,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import mb.dabm.servcatapi.entity.EmpresasServcat;
 import mb.dabm.servcatapi.entity.ReferenceNumber;
 import mb.dabm.servcatapi.service.ReferenceNumberService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/references")
@@ -85,6 +86,83 @@ public class ReferenceNumberController {
     ) {
         return service.getByRefNumNaoforContainingAndOrigem(refNumNaoFor, origem, page, size);
 
+    }
+
+    @PostMapping
+    public ResponseEntity<ReferenceNumber> createReference(@RequestBody ReferenceNumber referenceNumber) {
+
+        ReferenceNumber _referenceNumber = service.createReference(referenceNumber);
+        return ResponseEntity.status(HttpStatus.CREATED).body(_referenceNumber);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReferenceNumber> updateIDReference(@PathVariable("id") long id,
+                                                            @RequestBody ReferenceNumber referenceNumber) {
+        Optional<ReferenceNumber> referenceNumberData = service.findById(id);
+
+        if (referenceNumberData.isPresent()) {
+            ReferenceNumber _i = referenceNumberData.get();
+            _i.setCodRef(id);
+            _i.setCodGen(id);
+            _i.setCageCode(referenceNumber.getCageCode());
+            _i.setRefRnfc(referenceNumber.getRefRnfc());
+            _i.setRefRnvc(referenceNumber.getRefRnvc());
+            _i.setRefRncc(referenceNumber.getRefRncc());
+            _i.setRefRnsc(referenceNumber.getRefRnsc());
+            _i.setRefDac(referenceNumber.getRefDac());
+            _i.setRefRnjc(referenceNumber.getRefRnjc());
+            _i.setRefIsc(referenceNumber.getRefIsc());
+            _i.setRefRnaac(referenceNumber.getRefRnaac());
+            _i.setRefNum(referenceNumber.getRefNum());
+            _i.setRefNumNaofor(referenceNumber.getRefNumNaofor());
+            _i.setOrigem(referenceNumber.getOrigem());
+            _i.setRefMsds(referenceNumber.getRefMsds());
+            _i.setRefSadc(referenceNumber.getRefSadc());
+
+            return new ResponseEntity<>(service.createReference(_i), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{codRef}")
+    public ResponseEntity<ReferenceNumber> updateCodRefReferenceNumber(@PathVariable("codRef") String codRef,
+                                                                  @RequestBody ReferenceNumber referenceNumber) {
+        Optional<ReferenceNumber> referenceNumberData = Optional.ofNullable(service.findByCodRefId(codRef));
+
+        if (referenceNumberData.isPresent()) {
+            ReferenceNumber _i = referenceNumberData.get();
+            _i.setCodRef(Long.valueOf(codRef));
+            _i.setCodGen(referenceNumber.getCodGen());
+            _i.setCageCode(referenceNumber.getCageCode());
+            _i.setRefRnfc(referenceNumber.getRefRnfc());
+            _i.setRefRnvc(referenceNumber.getRefRnvc());
+            _i.setRefRncc(referenceNumber.getRefRncc());
+            _i.setRefRnsc(referenceNumber.getRefRnsc());
+            _i.setRefDac(referenceNumber.getRefDac());
+            _i.setRefRnjc(referenceNumber.getRefRnjc());
+            _i.setRefIsc(referenceNumber.getRefIsc());
+            _i.setRefRnaac(referenceNumber.getRefRnaac());
+            _i.setRefNum(referenceNumber.getRefNum());
+            _i.setRefNumNaofor(referenceNumber.getRefNumNaofor());
+            _i.setOrigem(referenceNumber.getOrigem());
+            _i.setRefMsds(referenceNumber.getRefMsds());
+            _i.setRefSadc(referenceNumber.getRefSadc());
+
+            return new ResponseEntity<>(service.createReference(_i), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteByReferenceId(@PathVariable("id") long id) {
+        Optional<ReferenceNumber> productO = service.findById(id);
+        if (productO.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        service.deleteByReferenceId(productO.get().getCodGen());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -6,7 +6,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import mb.dabm.servcatapi.entity.Identification;
-import mb.dabm.servcatapi.repository.IdentificationRepository;
 import mb.dabm.servcatapi.service.IdentificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,7 +34,7 @@ public class IdentificationController {
     public ResponseEntity<Page<Identification>> listAll(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) {
+    ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findAll(page, size));
     }
 
@@ -61,7 +60,7 @@ public class IdentificationController {
         @PathVariable("niin") String niin,
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) {
+    ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findByNiinLike(niin, page, size));
     }
 
@@ -73,7 +72,7 @@ public class IdentificationController {
     @Operation(summary = "Retorna um único item buscado por ID na coluna NIIN da tabela GENERAL")
     public ResponseEntity<Identification> listIdentificationByNiinId(
         @PathVariable("niin") String niin
-    ) {
+    ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findByNiinId(niin));
     }
 
@@ -86,7 +85,7 @@ public class IdentificationController {
     public ResponseEntity<Page<Identification>> listIdentificationByNiinAll(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) {
+    ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findByAllNiin(page, size));
     }
 
@@ -100,7 +99,7 @@ public class IdentificationController {
         @PathVariable("fsc") String fsc,
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) {
+    ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findByNiinFromFsc(fsc, page, size));
     }
 
@@ -114,7 +113,7 @@ public class IdentificationController {
         @PathVariable("inc") String inc,
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
-    ) {
+    ) throws EntityNotFoundException {
         return ResponseEntity.ok(service.findByNiinFromInc(inc, page, size));
     }
 
@@ -180,7 +179,7 @@ public class IdentificationController {
      */
     @PutMapping("/niin/{niin}")
     public ResponseEntity<Identification> updateNiinGeneral(@PathVariable("niin") String niin,
-                                                          @RequestBody Identification general) {
+                                                            @RequestBody Identification general) {
         Optional<Identification> identificationData = Optional.ofNullable(service.findByNiinId(niin));
 
         if (identificationData.isPresent()) {
@@ -222,4 +221,5 @@ public class IdentificationController {
         service.deleteById(productO.get().getCodGen());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

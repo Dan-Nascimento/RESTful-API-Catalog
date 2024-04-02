@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 @Data
@@ -22,16 +24,25 @@ public class ReferenceNumberService {
         return repository.getByAllReferenceNumber(PageRequest.of(page, size));
     }
 
-
     public ReferenceNumber findByCodRefId (String codRef) {
         return repository.getByCodRefId(codRef);
     }
 
+    public ReferenceNumber findById(Long id) {
+        return repository.getReferenceById(id);
+    }
+
+    public Optional<ReferenceNumber> findById(long id) {
+        return repository.findById(id);
+    }
+
+    public void deleteByReferenceId(long id) {
+        repository.deleteById(id);
+    }
 
     public Page<ReferenceNumber> findByReferenceNiin (String niin, int page, int size) {
         return repository.getByReferenceNiin(niin, PageRequest.of(page, size));
     }
-
 
     public Page<ReferenceNumber> getByNiinAndNumRef (String niin, String refNumNaoFor, int page, int size) {
 
@@ -49,6 +60,10 @@ public class ReferenceNumberService {
 
     public Page<ReferenceNumber> getByRefNumNaoforContainingAndOrigem(String refNumNaoFor, String origem, int page, int size) {
         return repository.findByRefNumNaoforContainingAndOrigem(refNumNaoFor, origem, PageRequest.of(page, size));
+    }
+
+    public ReferenceNumber createReference(ReferenceNumber referenceNumber) {
+        return repository.save(referenceNumber);
     }
 
 }
