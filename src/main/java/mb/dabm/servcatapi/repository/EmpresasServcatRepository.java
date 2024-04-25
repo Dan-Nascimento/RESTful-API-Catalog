@@ -5,7 +5,11 @@ import mb.dabm.servcatapi.entity.EmpresasServcat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface EmpresasServcatRepository
         extends JpaRepository<EmpresasServcat, Long> {
@@ -107,4 +111,16 @@ public interface EmpresasServcatRepository
     nativeQuery = true)
     Page<EmpresasServcat> getByCageCompanyName (String cageCompanyName, Pageable pageable);
 
+
+    Optional<EmpresasServcat> findByCageCode(String cageCode);
+
+
+
+    @Modifying
+    @Query("DELETE FROM EmpresasServcat e WHERE e.cageCode = :cageCode")
+    void deleteByCageCode(@Param("cageCode") String cageCode);
+
+
 }
+
+

@@ -124,6 +124,7 @@ public class IdentificationController {
      * @return
      */
     @PostMapping
+    @Operation(summary = "Realiza um post/create na tabela GENERAL")
     public ResponseEntity<Identification> createGeneral(@RequestBody Identification identification) {
 
         //preferível
@@ -142,6 +143,7 @@ public class IdentificationController {
      * @return
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Realiza um update na tabela GENERAL por um codGen id")
     public ResponseEntity<Identification> updateIDGeneral(@PathVariable("id") long id,
                                                           @RequestBody Identification general) {
         Optional<Identification> identificationData = service.findById(id);
@@ -178,6 +180,7 @@ public class IdentificationController {
      * @return
      */
     @PutMapping("/niin/{niin}")
+    @Operation(summary = "Realiza um update na tabela GENERAL por um niin id")
     public ResponseEntity<Identification> updateNiinGeneral(@PathVariable("niin") String niin,
                                                             @RequestBody Identification general) {
         Optional<Identification> identificationData = Optional.ofNullable(service.findByNiinId(niin));
@@ -213,6 +216,7 @@ public class IdentificationController {
      * @return
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Realiza um delete na tabela GENERAL por um codGen id")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
         Optional<Identification> productO = service.findById(id);
         if (productO.isEmpty()) {

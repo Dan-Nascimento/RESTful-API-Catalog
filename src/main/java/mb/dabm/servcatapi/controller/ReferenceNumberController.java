@@ -89,13 +89,16 @@ public class ReferenceNumberController {
     }
 
     @PostMapping
+    @Operation(summary = "Realiza um Post/create na tabela REFERENCE_NUMBER")
     public ResponseEntity<ReferenceNumber> createReference(@RequestBody ReferenceNumber referenceNumber) {
 
         ReferenceNumber _referenceNumber = service.createReference(referenceNumber);
         return ResponseEntity.status(HttpStatus.CREATED).body(_referenceNumber);
     }
 
+
     @PutMapping("/{id}")
+    @Operation(summary = "Realiza um update na tabela REFERENCE_NUMBER utilizando um codRef id")
     public ResponseEntity<ReferenceNumber> updateIDReference(@PathVariable("id") long id,
                                                             @RequestBody ReferenceNumber referenceNumber) {
         Optional<ReferenceNumber> referenceNumberData = service.findById(id);
@@ -125,14 +128,15 @@ public class ReferenceNumberController {
         }
     }
 
-    @PutMapping("/{codRef}")
+    @PutMapping("/codref/{codRef}")
+    @Operation(summary = "Realiza um update na tabela REFERENCE_NUMBER utilizando um codRef id")
     public ResponseEntity<ReferenceNumber> updateCodRefReferenceNumber(@PathVariable("codRef") String codRef,
                                                                   @RequestBody ReferenceNumber referenceNumber) {
         Optional<ReferenceNumber> referenceNumberData = Optional.ofNullable(service.findByCodRefId(codRef));
 
         if (referenceNumberData.isPresent()) {
             ReferenceNumber _i = referenceNumberData.get();
-            _i.setCodRef(Long.valueOf(codRef));
+            _i.setCodRef(referenceNumber.getCodRef());
             _i.setCodGen(referenceNumber.getCodGen());
             _i.setCageCode(referenceNumber.getCageCode());
             _i.setRefRnfc(referenceNumber.getRefRnfc());
@@ -156,13 +160,15 @@ public class ReferenceNumberController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Realiza um delete na tabela REFERENCE_NUMBER por um codRef id")
     public ResponseEntity<HttpStatus> deleteByReferenceId(@PathVariable("id") long id) {
         Optional<ReferenceNumber> productO = service.findById(id);
         if (productO.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.deleteByReferenceId(productO.get().getCodGen());
+        service.deleteByReferenceId(productO.get().getCodRef());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 }

@@ -2,7 +2,6 @@ package mb.dabm.servcatapi.repository;
 
 
 import mb.dabm.servcatapi.entity.Characteristics;
-import mb.dabm.servcatapi.entity.Management;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,8 +23,38 @@ public interface CharacteristicsRepository
     @Query(value = """
         SELECT *
         FROM CHARACTERISTICS
-        WHERE COD_GEN = :codGen""",
+        WHERE COD_GEN = :codGen1""",
         nativeQuery = true)
-    List<Characteristics> getByCodGen(String codGen);
+    List<Characteristics> getByCodGen(String codGen1);
 
+/*
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO CHARACTERISTICS " +
+        "(COD_GEN, CHAR_MRC, COD_CHAR, CHAR_CLEAR_TEXT_REPLY)" +
+        " VALUES " +
+        "( " +
+        ":#{#id.codGen}, " +
+        ":#{#id.charMrc}, "+
+        ":#{#id.codChar}, "+
+        ":#{#id.charClearTextReply}" +
+        ")", nativeQuery = true)
+    int insert(@Param("id") Characteristics id);
+
+
+ */
+    /*
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO CHARACTERISTICS " +
+        "(COD_GEN, CHAR_MRC, COD_CHAR, CHAR_CLEAR_TEXT_REPLY)" +
+        " VALUES " +
+        "( " +
+        ":#{#id.codGen1}, " +
+        ":#{#id.charMrc}, "+
+        ":#{#id.codChar}, "+
+        ":#{#id.charClearTextReply}" +
+        ")", nativeQuery = true)
+    int insert(@Param("id") Characteristics id);
+     */
 }

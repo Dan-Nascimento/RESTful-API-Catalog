@@ -82,16 +82,56 @@ public class EmpresasServCatController {
     }
 
     @PostMapping
+    @Operation(summary = "Realiza um post/create na tabela SUPPLIER(companies)")
     public ResponseEntity<EmpresasServcat> createSupplier(@RequestBody EmpresasServcat empresasServcat) {
 
         EmpresasServcat _empresasServcat = service.createSupplier(empresasServcat);
         return ResponseEntity.status(HttpStatus.CREATED).body(_empresasServcat);
     }
 
+    /*
     @PutMapping("/{id}")
-    public ResponseEntity<EmpresasServcat> updateIDSupplier(@PathVariable("id") long id,
-                                                          @RequestBody EmpresasServcat supplier) {
-        Optional<EmpresasServcat> empresasServcatData = service.findById(id);
+    public ResponseEntity<EmpresasServcat> updateIDSupplier(@PathVariable("id") String id,
+                                                            @RequestBody EmpresasServcat supplier) {
+        EmpresasServcat existingSupplier = service.findByCageCodeId(id);
+
+        if (existingSupplier != null) {
+            existingSupplier.setCageStatus(supplier.getCageStatus());
+            existingSupplier.setCageType(supplier.getCageType());
+            existingSupplier.setCageCao(supplier.getCageCao());
+            existingSupplier.setCageAdp(supplier.getCageAdp());
+            existingSupplier.setCageRplm(supplier.getCageRplm());
+            existingSupplier.setCageAssoc(supplier.getCageAssoc());
+            existingSupplier.setCageAffil(supplier.getCageAffil());
+            existingSupplier.setCageSize(supplier.getCageSize());
+            existingSupplier.setCagePrimaryBusiness(supplier.getCagePrimaryBusiness());
+            existingSupplier.setCageTypeOfBusiness(supplier.getCageTypeOfBusiness());
+            existingSupplier.setCageWomanOwned(supplier.getCageWomanOwned());
+            existingSupplier.setCageSicCodes(supplier.getCageSicCodes());
+            existingSupplier.setCageFax(supplier.getCageFax());
+            existingSupplier.setCageCompanyName(supplier.getCageCompanyName());
+            existingSupplier.setCageCompanyAddress(supplier.getCageCompanyAddress());
+            existingSupplier.setCagePoBox(supplier.getCagePoBox());
+            existingSupplier.setCageCity(supplier.getCageCity());
+            existingSupplier.setCageState(supplier.getCageState());
+            existingSupplier.setCageCountry(supplier.getCageCountry());
+            existingSupplier.setCageZipCode(supplier.getCageZipCode());
+            existingSupplier.setCageTelephone(supplier.getCageTelephone());
+            existingSupplier.setCageFormerAddress(supplier.getCageFormerAddress());
+
+            return new ResponseEntity<>(service.createSupplier(existingSupplier), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+     */
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Realiza um update na tabela SUPPLIER(companies) por um cageCode id")
+    public ResponseEntity<EmpresasServcat> updateIdSupplier(@PathVariable("id") String id,
+                                                                  @RequestBody EmpresasServcat supplier) {
+        Optional<EmpresasServcat> empresasServcatData = Optional.ofNullable(service.findByCageCodeId(id));
 
         if (empresasServcatData.isPresent()) {
             EmpresasServcat _i = empresasServcatData.get();
@@ -126,6 +166,7 @@ public class EmpresasServCatController {
     }
 
     @PutMapping("/cage/{cageCode}")
+    @Operation(summary = "Realiza um update na tabela SUPPLIER(companies) por um cageCode id")
     public ResponseEntity<EmpresasServcat> updateCageCodeSupplier(@PathVariable("cageCode") String cageCode,
                                                             @RequestBody EmpresasServcat supplier) {
         Optional<EmpresasServcat> empresasServcatData = Optional.ofNullable(service.findByCageCodeId(cageCode));
@@ -162,14 +203,25 @@ public class EmpresasServCatController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteByCompaniesId(@PathVariable("id") long id) {
-        Optional<EmpresasServcat> productO = service.findById(id);
-        if (productO.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    /*
+    @DeleteMapping("/empresas/{cageCode}")
+    @Operation(summary = "Realiza um delete na tabela SUPPLIER(companies) por um cageCode id")
+    public void deleteEmpresasServcatById(@PathVariable String cageCode) {
+        service.deleteEmpresasServcatByCageCode(cageCode);
+    }
+
+     */
+
+    @DeleteMapping("/empresas/{cageCode}")
+    @Operation(summary = "Realiza um delete na tabela SUPPLIER(companies) por um cageCode id")
+    public ResponseEntity<Object> deleteEmpresasServcatByCageCode(@PathVariable String cageCode) {
+        Optional<EmpresasServcat> empresa = service.getRepository().findByCageCode(cageCode);
+        if (empresa.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        service.deleteByCompaniesId(Long.parseLong(productO.get().getCageCode()));
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        service.deleteEmpresasServcatByCageCode(cageCode);
+        return ResponseEntity.noContent().build();
     }
 
 }

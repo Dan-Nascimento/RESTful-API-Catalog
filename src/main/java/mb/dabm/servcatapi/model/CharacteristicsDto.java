@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CharacteristicsDto(
 
-    Long codGen,
+    Long codGen1,
     String charMrc,
     Long codChar,
     String charClearTextReply

@@ -91,7 +91,4 @@ public class EmpresasServcat implements Serializable {
     @Column(name = "CAGE_FORMER_ADDRESS", length = 200)
     String cageFormerAddress;
 
-
-
-
 }

@@ -38,12 +38,24 @@ public class CharacteristicsController {
     @GetMapping("/codgen/{codGen}")
     @Operation(summary = "Retorna uma lista de registros encontrados sem paginação na tabela CHARACTERISTICS")
     public ResponseEntity<List<Characteristics>> listByCodGen(
-        @PathVariable("codGen") String codGen
+        @PathVariable("codGen") String codGen1
     ){
-        return ResponseEntity.ok(service.findByCodGen(codGen));
+        return ResponseEntity.ok(service.findByCodGen(codGen1));
     }
 
+
+    /*
+     Teste realizado com os dados fictícios aleatórios, conforme abaixo. A API não está permitindo realizar o teste com os dados constantes no mantis por um possível conflito de cadastro com a API antiga.
+    {
+    "cod_gen": 14292679,
+    "char_mrc": "AGXX",
+    "cod_char": 34304559,
+    "char_clear_text_reply": "LIQUID"
+}
+
+     */
     @PostMapping
+    @Operation(summary = "Realiza um post/create na tabela CHARACTERISTICS")
     public ResponseEntity<Characteristics> createCharacteristics(@RequestBody Characteristics characteristics) {
 
         Characteristics _characteristics = service.createCharacteristics(characteristics);
@@ -51,31 +63,14 @@ public class CharacteristicsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Characteristics> updateIDCharacteristics(@PathVariable("id") long id,
-                                                            @RequestBody Characteristics characteristics) {
-        Optional<Characteristics> characteristicsData = service.findById(id);
+    @Operation(summary = "Realiza um update na tabela CHARACTERISTICS por um codGen id")
+    public ResponseEntity<Characteristics> updateIDCharacteristics(@PathVariable("id") Long id,
+                                                                   @RequestBody Characteristics characteristics) {
+        Optional<Characteristics> characteristicsData = Optional.ofNullable(service.findById(id));
 
         if (characteristicsData.isPresent()) {
             Characteristics _i = characteristicsData.get();
             _i.setCodGen(id);
-            _i.setCharMrc(characteristics.getCharMrc());
-            _i.setCodChar(id);
-            _i.setCharClearTextReply(characteristics.getCharClearTextReply());
-
-            return new ResponseEntity<>(service.createCharacteristics(_i), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/codGen/{codGen}")
-    public ResponseEntity<Characteristics> updateCodGenCharacteristics(@PathVariable("codGen") String codGen,
-                                                                  @RequestBody Characteristics characteristics) {
-        Optional<Characteristics> characteristicsData = Optional.ofNullable(service.findById(Long.valueOf(codGen)));
-
-        if (characteristicsData.isPresent()) {
-            Characteristics _i = characteristicsData.get();
-            _i.setCodGen(Long.valueOf(codGen));
             _i.setCharMrc(characteristics.getCharMrc());
             _i.setCodChar(characteristics.getCodChar());
             _i.setCharClearTextReply(characteristics.getCharClearTextReply());
@@ -86,13 +81,34 @@ public class CharacteristicsController {
         }
     }
 
+    @PutMapping("/codgen/{codGen}")
+    @Operation(summary = "Realiza um update na tabela CHARACTERISTICS por um codGen id")
+    public ResponseEntity<Characteristics> updateCodGenCharacteristics(@PathVariable("codGen") Long codGen,
+                                                                       @RequestBody Characteristics characteristics) {
+        Optional<Characteristics> characteristicsData = Optional.ofNullable(service.findById(codGen));
+
+        if (characteristicsData.isPresent()) {
+            Characteristics _i = characteristicsData.get();
+            _i.setCodGen(codGen);
+            _i.setCharMrc(characteristics.getCharMrc());
+            _i.setCodChar(characteristics.getCodChar());
+            _i.setCharClearTextReply(characteristics.getCharClearTextReply());
+
+            return new ResponseEntity<>(service.createCharacteristics(_i), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     @DeleteMapping("/{id}")
+    @Operation(summary = "Realiza um delete na tabela CHARACTERISTICS por um codGen id")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
         Optional<Characteristics> productO = service.findById(id);
         if (productO.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.deleteByCharacteristicsId(productO.get().getCodGen());
+        service.deleteById(productO.get().getCodGen());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

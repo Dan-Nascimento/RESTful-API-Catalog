@@ -25,8 +25,8 @@ public class CharacteristicsService {
         return repository.getByAll(PageRequest.of(page, size));
     }
 
-    public List<Characteristics> findByCodGen(String codGen) {
-        return repository.getByCodGen(codGen);
+    public List<Characteristics> findByCodGen(String codGen1) {
+        return repository.getByCodGen(codGen1);
     }
 
     public Characteristics findById(Long id) {
@@ -37,12 +37,21 @@ public class CharacteristicsService {
         return repository.findById(id);
     }
 
-    public void deleteByCharacteristicsId(long id) {
+    public void deleteById(long id) {
         repository.deleteById(id);
     }
+
 
     public Characteristics createCharacteristics(Characteristics characteristics) {
         return repository.save(characteristics);
     }
 
-}
+    /*
+    public Characteristics insertCharacteristics(Characteristics characteristics) {
+        int rs = repository.insert(characteristics);
+        return (rs > 0) ? characteristics : null;
+
+
+     */
+    }
+
