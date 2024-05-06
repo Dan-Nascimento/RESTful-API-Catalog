@@ -28,6 +28,7 @@ public class ReferenceNumberService {
         return repository.getByCodRefId(codRef);
     }
 
+
     public ReferenceNumber findById(Long id) {
         return repository.getReferenceById(id);
     }
@@ -62,9 +63,23 @@ public class ReferenceNumberService {
         return repository.findByRefNumNaoforContainingAndOrigem(refNumNaoFor, origem, PageRequest.of(page, size));
     }
 
+
     public ReferenceNumber createReference(ReferenceNumber referenceNumber) {
         return repository.save(referenceNumber);
     }
+
+
+    /*
+    public Long getNextCodRef() {
+        return ((BigDecimal) repository.createNativeQuery("SELECT SEQREF.NEXTVAL FROM DUAL").getSingleResult()).longValue();
+    }
+
+    public ReferenceNumber createReference(ReferenceNumber referenceNumber) {
+        referenceNumber.setCodRef(getNextCodRef());
+        return repository.save(referenceNumber);
+    }
+
+     */
 
 }
 

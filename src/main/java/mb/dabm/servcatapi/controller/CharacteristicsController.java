@@ -54,6 +54,7 @@ public class CharacteristicsController {
 }
 
      */
+
     @PostMapping
     @Operation(summary = "Realiza um post/create na tabela CHARACTERISTICS")
     public ResponseEntity<Characteristics> createCharacteristics(@RequestBody Characteristics characteristics) {
@@ -62,17 +63,18 @@ public class CharacteristicsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(_characteristics);
     }
 
+
     @PutMapping("/{id}")
-    @Operation(summary = "Realiza um update na tabela CHARACTERISTICS por um codGen id")
+    @Operation(summary = "Realiza um update na tabela CHARACTERISTICS por um codChar id")
     public ResponseEntity<Characteristics> updateIDCharacteristics(@PathVariable("id") Long id,
                                                                    @RequestBody Characteristics characteristics) {
         Optional<Characteristics> characteristicsData = Optional.ofNullable(service.findById(id));
 
         if (characteristicsData.isPresent()) {
             Characteristics _i = characteristicsData.get();
-            _i.setCodGen(id);
+            _i.setCodChar(id);
+            _i.setCodGen(characteristics.getCodGen());
             _i.setCharMrc(characteristics.getCharMrc());
-            _i.setCodChar(characteristics.getCodChar());
             _i.setCharClearTextReply(characteristics.getCharClearTextReply());
 
             return new ResponseEntity<>(service.createCharacteristics(_i), HttpStatus.OK);
@@ -81,17 +83,17 @@ public class CharacteristicsController {
         }
     }
 
-    @PutMapping("/codgen/{codGen}")
-    @Operation(summary = "Realiza um update na tabela CHARACTERISTICS por um codGen id")
-    public ResponseEntity<Characteristics> updateCodGenCharacteristics(@PathVariable("codGen") Long codGen,
+    @PutMapping("/codchar/{codChar}")
+    @Operation(summary = "Realiza um update na tabela CHARACTERISTICS por um codChar id")
+    public ResponseEntity<Characteristics> updateCodGenCharacteristics(@PathVariable("codChar") Long codChar,
                                                                        @RequestBody Characteristics characteristics) {
-        Optional<Characteristics> characteristicsData = Optional.ofNullable(service.findById(codGen));
+        Optional<Characteristics> characteristicsData = Optional.ofNullable(service.findById(codChar));
 
         if (characteristicsData.isPresent()) {
             Characteristics _i = characteristicsData.get();
-            _i.setCodGen(codGen);
+            _i.setCodChar(codChar);
+            _i.setCodGen(characteristics.getCodGen());
             _i.setCharMrc(characteristics.getCharMrc());
-            _i.setCodChar(characteristics.getCodChar());
             _i.setCharClearTextReply(characteristics.getCharClearTextReply());
 
             return new ResponseEntity<>(service.createCharacteristics(_i), HttpStatus.OK);
@@ -102,13 +104,13 @@ public class CharacteristicsController {
 
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Realiza um delete na tabela CHARACTERISTICS por um codGen id")
+    @Operation(summary = "Realiza um delete na tabela CHARACTERISTICS por um codChar id")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") long id) {
         Optional<Characteristics> productO = service.findById(id);
         if (productO.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.deleteById(productO.get().getCodGen());
+        service.deleteById(productO.get().getCodChar());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

@@ -60,9 +60,33 @@ public interface ReferenceNumberRepository
     Page<ReferenceNumber> findByRefNumNaoforContainingAndOrigem(String refNumNaofor, String origem, Pageable pageable);
 
 }
+    /*
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO REFERENCE_NUMBER " +
+        "(COD_REF, COD_GEN, CAGE_CODE, REF_RNFC, REF_RNVC, REF_RNCC, REF_RNSC, REF_DAC, REF_RNJC, REF_ISC, REF_RNAAC, REF_NUM, REF_NUM_NAOFOR, ORIGEM, REF_MSDS, REF_SADC)" +
+        " VALUES " +
+        "( " +
+        ":#{#id.codRef}, " +
+        ":#{#id.codGen}, "+
+        ":#{#id.cageCode}, "+
+        ":#{#id.refRnfc}, "+
+        ":#{#id.refRnvc}, "+
+        ":#{#id.refRncc}, "+
+        ":#{#id.refRnsc}, "+
+        ":#{#id.refDac}, "+
+        ":#{#id.refRnjc}, "+
+        ":#{#id.refIsc} "+
+        ":#{#id.refRnaac}, "+
+        ":#{#id.refNum}, "+
+        ":#{#id.refNumNaofor}, "+
+        ":#{#id.origem}, "+
+        ":#{#id.refMsds}, "+
+        ":#{#id.refSadc}, "+
+        ")", nativeQuery = true)
+    int insert(@Param("id") ReferenceNumber id);
 
-
-
+     */
 
 
 /*

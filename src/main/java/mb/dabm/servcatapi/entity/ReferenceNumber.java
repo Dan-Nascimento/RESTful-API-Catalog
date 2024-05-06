@@ -4,10 +4,7 @@ package mb.dabm.servcatapi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +22,8 @@ public class ReferenceNumber implements Serializable {
 
     @Id
     @Column(name = "COD_REF")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQREF")
+    @SequenceGenerator(name = "SEQREF", allocationSize = 1, sequenceName = "SEQREF")
     Long codRef;
 
     @Column(name = "COD_GEN")
@@ -71,7 +70,6 @@ public class ReferenceNumber implements Serializable {
 
     @Column(name = "REF_SADC")
     String refSadc;
-
 
 
 }

@@ -41,10 +41,24 @@ public class CharacteristicsService {
         repository.deleteById(id);
     }
 
-
     public Characteristics createCharacteristics(Characteristics characteristics) {
         return repository.save(characteristics);
     }
+
+
+    /*
+
+
+    @Transactional
+    public Characteristics createCharacteristics(Characteristics characteristics) {
+        Long nextVal = (Long) entityManager.createNativeQuery("SELECT CHARACTERISTICS_SEQ.NEXTVAL FROM DUAL").getSingleResult();
+        characteristics.setCodGen(nextVal);
+        entityManager.persist(characteristics);
+        return characteristics;
+
+    }
+
+     */
 
     /*
     public Characteristics insertCharacteristics(Characteristics characteristics) {

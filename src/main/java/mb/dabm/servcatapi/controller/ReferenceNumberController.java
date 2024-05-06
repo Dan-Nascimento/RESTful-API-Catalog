@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+
 @RestController
 @RequestMapping("/references")
 @AllArgsConstructor
@@ -88,8 +89,21 @@ public class ReferenceNumberController {
 
     }
 
+    /*
     @PostMapping
     @Operation(summary = "Realiza um Post/create na tabela REFERENCE_NUMBER")
+    public ResponseEntity<ReferenceNumber> createReference(@RequestBody ReferenceNumber referenceNumber) {
+
+        ReferenceNumber _referenceNumber = service.insertReferenceNumber(referenceNumber);
+        System.out.println("ID: " + referenceNumber.toString());
+        return new ResponseEntity<>(_referenceNumber, HttpStatus.CREATED);
+
+    }
+
+     */
+
+    @PostMapping
+    @Operation(summary = "Realiza um post/create na tabela REFERENCE_NUMBER")
     public ResponseEntity<ReferenceNumber> createReference(@RequestBody ReferenceNumber referenceNumber) {
 
         ReferenceNumber _referenceNumber = service.createReference(referenceNumber);
@@ -106,7 +120,7 @@ public class ReferenceNumberController {
         if (referenceNumberData.isPresent()) {
             ReferenceNumber _i = referenceNumberData.get();
             _i.setCodRef(id);
-            _i.setCodGen(id);
+            _i.setCodGen(referenceNumber.getCodGen());
             _i.setCageCode(referenceNumber.getCageCode());
             _i.setRefRnfc(referenceNumber.getRefRnfc());
             _i.setRefRnvc(referenceNumber.getRefRnvc());
@@ -130,13 +144,13 @@ public class ReferenceNumberController {
 
     @PutMapping("/codref/{codRef}")
     @Operation(summary = "Realiza um update na tabela REFERENCE_NUMBER utilizando um codRef id")
-    public ResponseEntity<ReferenceNumber> updateCodRefReferenceNumber(@PathVariable("codRef") String codRef,
+    public ResponseEntity<ReferenceNumber> updateCodRefReferenceNumber(@PathVariable("codRef") Long codRef,
                                                                   @RequestBody ReferenceNumber referenceNumber) {
-        Optional<ReferenceNumber> referenceNumberData = Optional.ofNullable(service.findByCodRefId(codRef));
+        Optional<ReferenceNumber> referenceNumberData = Optional.ofNullable(service.findById(codRef));
 
         if (referenceNumberData.isPresent()) {
             ReferenceNumber _i = referenceNumberData.get();
-            _i.setCodRef(referenceNumber.getCodRef());
+            _i.setCodRef(codRef);
             _i.setCodGen(referenceNumber.getCodGen());
             _i.setCageCode(referenceNumber.getCageCode());
             _i.setRefRnfc(referenceNumber.getRefRnfc());
