@@ -2,7 +2,9 @@
 
 ## Propósito:
 
-Webservice of catalog with more than 1 million itens. This API was released ONLY AS A PORTRAIT, considering there were sensitive data that couldn't be shared with the public. That's why it won't go up if executed, but, as said, can show a bit of my expertise at the area.
+Webservice Catalog of a RESTful API
+
+This project showcases a RESTful API designed to manage a catalog containing over 1 million items. Due to the sensitive nature of the data involved, the API has been released as a portrait version, ensuring that no confidential information is accessible to the public. While the API cannot be executed in a public environment, this project serves as a testament to my proficiency in developing scalable and efficient web services. It demonstrates my ability to handle large datasets and implement secure data management practices in API design.
 
 ## Informações Técnicas
 
