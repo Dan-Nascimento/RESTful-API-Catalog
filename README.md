@@ -2,7 +2,7 @@
 
 ## Propósito:
 
-O Webservice...
+Webservice of catalog with more than 1 million itens. This API was released ONLY AS A PORTRAIT, considering there were sensitive data that couldn't be shared with the public. That's why it won't go up if executed, but, as said, can show a bit of my expertise at the area.
 
 ## Informações Técnicas
 
