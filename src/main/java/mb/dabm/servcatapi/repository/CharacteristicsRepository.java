@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CharacteristicsRepository
-    extends JpaRepository<Characteristics, Long> {
+    extends JpaRepository<Characteristics, Long>, CustomCharacteristicsRepository {
 
     @Query(value = "SELECT S.COD_GEN\n" +
         "      ,S.CHAR_MRC\n" +
@@ -23,9 +23,9 @@ public interface CharacteristicsRepository
     @Query(value = """
         SELECT *
         FROM CHARACTERISTICS
-        WHERE COD_GEN = :codGen1""",
+        WHERE COD_GEN = :codGen""",
         nativeQuery = true)
-    List<Characteristics> getByCodGen(String codGen1);
+    List<Characteristics> getByCodGen(String codGen);
 
 /*
     @Modifying
@@ -43,6 +43,7 @@ public interface CharacteristicsRepository
 
 
  */
+
     /*
     @Modifying
     @Transactional
@@ -50,11 +51,13 @@ public interface CharacteristicsRepository
         "(COD_GEN, CHAR_MRC, COD_CHAR, CHAR_CLEAR_TEXT_REPLY)" +
         " VALUES " +
         "( " +
-        ":#{#id.codGen1}, " +
+        ":#{#id.codGen}, " +
         ":#{#id.charMrc}, "+
         ":#{#id.codChar}, "+
         ":#{#id.charClearTextReply}" +
         ")", nativeQuery = true)
     int insert(@Param("id") Characteristics id);
+
      */
+
 }

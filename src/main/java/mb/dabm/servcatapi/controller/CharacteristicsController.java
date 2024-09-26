@@ -38,10 +38,33 @@ public class CharacteristicsController {
     @GetMapping("/codgen/{codGen}")
     @Operation(summary = "Retorna uma lista de registros encontrados sem paginação na tabela CHARACTERISTICS")
     public ResponseEntity<List<Characteristics>> listByCodGen(
-        @PathVariable("codGen") String codGen1
+        @PathVariable("codGen") String codGen
     ){
-        return ResponseEntity.ok(service.findByCodGen(codGen1));
+        return ResponseEntity.ok(service.findByCodGen(codGen));
     }
+
+    @PostMapping
+    public ResponseEntity<String> createCharacteristics(@RequestBody Characteristics characteristics) {
+        int rowsAffected = service.saveCharacteristics(characteristics);
+        if (rowsAffected > 0) {
+            return new ResponseEntity<>("Characteristics created successfully", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Failed to create characteristics", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /*
+    @PostMapping
+    @Operation(summary = "Realiza um post/create na tabela GENERAL")
+    public ResponseEntity<Characteristics> createGeneral(@RequestBody Characteristics characteristics) {
+
+        Characteristics _characteristics = service.insertCharacteristics(characteristics);
+        System.out.println("ID: " + characteristics.toString());
+        return new ResponseEntity<>(_characteristics, HttpStatus.CREATED);
+
+    }
+
+     */
 
 
     /*
@@ -55,6 +78,7 @@ public class CharacteristicsController {
 
      */
 
+/*
     @PostMapping
     @Operation(summary = "Realiza um post/create na tabela CHARACTERISTICS")
     public ResponseEntity<Characteristics> createCharacteristics(@RequestBody Characteristics characteristics) {
@@ -102,6 +126,7 @@ public class CharacteristicsController {
         }
     }
 
+ */
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Realiza um delete na tabela CHARACTERISTICS por um codChar id")
